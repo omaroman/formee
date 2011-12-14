@@ -1,0 +1,322 @@
+nav#main-menu {
+    background-color: #DEDEDE
+}
+
+ul#css3menu, ul#css3menu ul {
+	list-style-type:none;
+	/*list-style-position:initial;*/
+	/*list-style-image:initial;*/
+	background-color:#DEDEDE;
+	border-top-left-radius:5px 5px;
+	-webkit-border-top-left-radius:5px 5px;
+	-o-border-top-left-radius:5px 5px;
+	-moz-border-radius-topleft:5px 5px;
+	border-top-right-radius:5px 5px;
+	-webkit-border-top-right-radius:5px 5px;
+	-o-border-top-right-radius:5px 5px;
+	-moz-border-radius-topright:5px 5px;
+	border-bottom-right-radius:5px 5px;
+	-webkit-border-bottom-right-radius:5px 5px;
+	-o-border-bottom-right-radius:5px 5px;
+	-moz-border-radius-bottomright:5px 5px;
+	border-bottom-left-radius:5px 5px;
+	-webkit-border-bottom-left-radius:5px 5px;
+	-o-border-bottom-left-radius:5px 5px;
+	-moz-border-radius-bottomleft:5px 5px;
+	border:1px solid #5F5F5F;
+	margin:0;
+	padding:0;
+    z-index: 666;
+}
+
+ul#css3menu ul {
+	display:none;
+	position:absolute;
+	left:0;
+	top:100%;
+	box-shadow:rgb(0, 0, 0) 3.5px 3.5px 5px;
+	-webkit-box-shadow:rgb(0, 0, 0) 3.5px 3.5px 5px;
+	-o-box-shadow:rgb(0, 0, 0) 3.5px 3.5px 5px;
+	-moz-box-shadow:rgb(0, 0, 0) 3.5px 3.5px 5px;
+	background-color:rgba(66,69,66,0.90);
+	border-top-width:2px;
+	border-right-width:2px;
+	border-bottom-width:2px;
+	border-left-width:2px;
+	border-top-left-radius:6px 6px;
+	-webkit-border-top-left-radius:6px 6px;
+	-o-border-top-left-radius:6px 6px;
+	-moz-border-radius-topleft:6px 6px;
+	border-top-right-radius:6px 6px;
+	-webkit-border-top-right-radius:6px 6px;
+	-o-border-top-right-radius:6px 6px;
+	-moz-border-radius-topright:6px 6px;
+	border-bottom-right-radius:6px 6px;
+	-webkit-border-bottom-right-radius:6px 6px;
+	-o-border-bottom-right-radius:6px 6px;
+	-moz-border-radius-bottomright:6px 6px;
+	border-bottom-left-radius:6px 6px;
+	-webkit-border-bottom-left-radius:6px 6px;
+	-o-border-bottom-left-radius:6px 6px;
+	-moz-border-radius-bottomleft:6px 6px;
+	border-top-color:#FFFFFF;
+	border-right-color:#FFFFFF;
+	border-bottom-color:#FFFFFF;
+	border-left-color:#FFFFFF;
+	padding:0px 10px 10px 10px;
+}
+
+ul#css3menu li:hover > * {
+	display:block;
+}
+
+ul#css3menu li:hover {
+	position:relative;
+}
+
+ul#css3menu ul ul {
+	position:absolute;
+	left:100%;
+	top:0;
+}
+
+ul#css3menu {
+	display:block;
+	font-size:0;
+	float:left;
+}
+
+ul#css3menu li {
+	display:block;
+	white-space:nowrap;
+	font-size:0;
+	float:left;
+}
+
+ul#css3menu > li, ul#css3menu li {
+	margin:0;
+}
+
+ul#css3menu a:active, ul#css3menu a:focus {
+	outline-style:none;
+}
+
+ul#css3menu a, ul#css3menu a.pressed {
+	display:block;
+	vertical-align:middle;
+	text-align:left;
+	text-decoration:none;
+	font:normal normal bold 14px/normal 'Trebuchet MS', sans-serif;
+	color:#000000;
+	text-shadow:rgb(255, 255, 255) 0px 0px 1px;
+	cursor:pointer;
+}
+
+ul#css3menu ul li {
+	float:none;
+	margin:10px 0px 0px 0px;
+}
+
+ul#css3menu ul a {
+	text-align:left;
+	background-color:rgba(66,69,66,0.00);
+	background-image:none;
+	border-top-width:0;
+	border-right-width:0;
+	border-bottom-width:0;
+	border-left-width:0;
+	border-top-left-radius:0px 0px;
+	-webkit-border-top-left-radius:0px 0px;
+	-o-border-top-left-radius:0px 0px;
+	-moz-border-radius-topleft:0px 0px;
+	border-top-right-radius:0px 0px;
+	-webkit-border-top-right-radius:0px 0px;
+	-o-border-top-right-radius:0px 0px;
+	-moz-border-radius-topright:0px 0px;
+	border-bottom-right-radius:0px 0px;
+	-webkit-border-bottom-right-radius:0px 0px;
+	-o-border-bottom-right-radius:0px 0px;
+	-moz-border-radius-bottomright:0px 0px;
+	border-bottom-left-radius:0px 0px;
+	-webkit-border-bottom-left-radius:0px 0px;
+	-o-border-bottom-left-radius:0px 0px;
+	-moz-border-radius-bottomleft:0px 0px;
+	font:normal normal normal 14px/normal Tahoma, sans-serif;
+	color:#FFFFFF;
+	text-decoration:none;
+	text-shadow:rgb(255, 255, 255) 0px 0px 0px;
+	padding:4px;
+}
+
+ul#css3menu li:hover > a {
+	background-color:#444444;
+	border-top-color:#C0C0C0;
+	border-right-color:#C0C0C0;
+	border-bottom-color:#C0C0C0;
+	border-left-color:#C0C0C0;
+	font:normal normal bold 14px/normal 'Trebuchet MS', sans-serif;
+	color:#FFFFFF;
+	text-decoration:none;
+	text-shadow:rgb(255, 255, 255) 0px 0px 1px;
+	background-image:url(../images/mainbk.png);
+	background-position:0px 100px;
+	background-position-x:0;
+	background-position-y:100px;
+	border-style:solid;
+}
+
+ul#css3menu img {
+	/*border-width:initial;*/
+	border-top-color:#000000;
+	border-right-color:#000000;
+	border-bottom-color:#000000;
+	border-left-color:#000000;
+	vertical-align:middle;
+	margin-right:10px;
+	border-style:none;
+}
+
+ul#css3menu img.over {
+	display:none;
+}
+
+ul#css3menu li:hover > a img.def {
+	display:none;
+}
+
+ul#css3menu li:hover > a img.over {
+	display:inline;
+}
+
+ul#css3menu li a.pressed img.over {
+	display:inline;
+}
+
+ul#css3menu li a.pressed img.def {
+	display:none;
+}
+
+ul#css3menu span {
+	display:block;
+	overflow:visible;
+	background-position:100% 50%;
+	background-position-x:100%;
+	background-position-y:50%;
+	background-repeat-x:no-repeat;
+	background-repeat-y:no-repeat;
+	background-repeat:no-repeat;
+	padding-right:0;
+}
+
+ul#css3menu ul span {
+	background-image:url(../images/arrowsub.png);
+	padding-right:24px;
+}
+
+ul#css3menu a {
+	background-color:#444444;
+	background-image:url(../images/mainbk.png);
+	background-repeat-x:repeat;
+	background-repeat-y:repeat;
+	background-repeat:repeat;
+	background-position:0px 0px;
+	background-position-x:0;
+	background-position-y:0;
+	color:#000000;
+	text-decoration:none;
+	text-shadow:rgb(255, 255, 255) 0px 0px 1px;
+	border-left:1px solid #C0C0C0;
+	border-right:0px solid #C0C0C0;
+	border-top:0px solid #C0C0C0;
+	border-bottom:0px solid #C0C0C0;
+	padding:10px;
+}
+
+ul#css3menu li:hover > a, ul#css3menu1 li > a.pressed {
+	background-color:#444444;
+	background-image:url(../images/mainbk.png);
+	background-position:0px 100px;
+	background-position-x:0;
+	background-position-y:100px;
+	border-top-color:#C0C0C0;
+	border-right-color:#C0C0C0;
+	border-bottom-color:#C0C0C0;
+	border-left-color:#C0C0C0;
+	color:#FFFFFF;
+	text-decoration:none;
+	text-shadow:rgb(255, 255, 255) 0px 0px 1px;
+	border-style:solid;
+}
+
+ul#css3menu ul li:hover > a, ul#css3menu ul li > a.pressed {
+	background-color:rgba(66,69,66,0.00);
+	background-image:none;
+	font:normal normal normal 14px/normal Tahoma, sans-serif;
+	color:#F2B20E;
+	text-decoration:none;
+	text-shadow:rgb(255, 255, 255) 0px 0px 0px;
+}
+
+ul#css3menu li.topfirst > a {
+	height:18px;
+	line-height:18px;
+	border-top-width:0;
+	border-right-width:0;
+	border-bottom-width:0;
+	border-left-width:0;
+	border-top-left-radius:4px 4px;
+	-webkit-border-top-left-radius:4px 4px;
+	-o-border-top-left-radius:4px 4px;
+	-moz-border-radius-topleft:4px 4px;
+	border-top-right-radius:0px 0px;
+	-webkit-border-top-right-radius:0px 0px;
+	-o-border-top-right-radius:0px 0px;
+	-moz-border-radius-topright:0px 0px;
+	border-bottom-right-radius:0px 0px;
+	-webkit-border-bottom-right-radius:0px 0px;
+	-o-border-bottom-right-radius:0px 0px;
+	-moz-border-radius-bottomright:0px 0px;
+	border-bottom-left-radius:4px 4px;
+	-webkit-border-bottom-left-radius:4px 4px;
+	-o-border-bottom-left-radius:4px 4px;
+	-moz-border-radius-bottomleft:4px 4px;
+}
+
+ul#css3menu li.topfirst:hover > a, ul#css3menu li.topfirst > a.pressed {
+	line-height:18px;
+}
+
+ul#css3menu li.topmenu > a {
+	height:18px;
+	line-height:18px;
+}
+
+ul#css3menu li.topmenu:hover > a, ul#css3menu li.topmenu > a.pressed {
+	line-height:18px;
+}
+
+ul#css3menu li.toplast > a {
+	height:18px;
+	line-height:18px;
+	border-top-left-radius:0px 0px;
+	-webkit-border-top-left-radius:0px 0px;
+	-o-border-top-left-radius:0px 0px;
+	-moz-border-radius-topleft:0px 0px;
+	border-top-right-radius:4px 4px;
+	-webkit-border-top-right-radius:4px 4px;
+	-o-border-top-right-radius:4px 4px;
+	-moz-border-radius-topright:4px 4px;
+	border-bottom-right-radius:4px 4px;
+	-webkit-border-bottom-right-radius:4px 4px;
+	-o-border-bottom-right-radius:4px 4px;
+	-moz-border-radius-bottomright:4px 4px;
+	border-bottom-left-radius:0px 0px;
+	-webkit-border-bottom-left-radius:0px 0px;
+	-o-border-bottom-left-radius:0px 0px;
+	-moz-border-radius-bottomleft:0px 0px;
+}
+
+ul#css3menu li.toplast:hover > a, ul#css3menu li.toplast > a.pressed {
+	line-height:18px;
+}
+

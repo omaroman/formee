@@ -1,0 +1,13 @@
+# Application dependencies
+
+require:
+    - play
+
+    - formee -> formee
+
+repositories:
+    - test formee module:
+        type:       local
+        artifact:   ${application.path}/../../../[module]
+        contains:
+            - formee -> *

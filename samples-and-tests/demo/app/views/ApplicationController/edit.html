@@ -1,0 +1,43 @@
+#{extends 'layouts/layout.html' /}
+#{set title:'Create Author' /}
+#{set 'moreStyles'}
+    #{formee.css/}
+#{/set}
+#{set 'moreScripts'}
+    #{script 'formee/formee.js' /}
+    #{script 'formee/formee-validate.js' /}
+    #{script 'application.js' /}
+#{/set}
+
+<!-- BEGIN #content .row -->
+<section id="content" role="container" class="row" >
+
+    <!-- BEGIN #maincontent .col_12-->
+#{formee.form @ApplicationController.update(), class:'col col_8 push_4'}
+    <fieldset>
+        <legend>Author</legend>
+
+        #{ifErrors }
+            <div id="flash-container" class="formee-msg-error">
+                <h3>&{'global.form.msg.error'}</h3>
+            </div>
+        #{/ifErrors}
+
+        #{formee.hidden 'author.id', object:author /}
+
+        #{formee.h_block 'models.Author:author.first_name', object:author, label_col:3, input_col:4, required:true /}
+        #{formee.h_block 'models.Author:author.last_name', object:author, label_col:3, input_col:4, required:true /}
+        #{formee.h_block 'models.Author:author.age', object:author, label_col:3, input_col:4, required:true /}
+
+        <div class="grid-12-12">
+            <input class="right" type="submit" title="Update">
+        </div>
+    </fieldset>
+#{/formee.form}
+    <!-- END #maincontent .col_12-->
+
+</section>
+<!-- END #content .row -->
+
+<div class="clear" style="height:15px;"></div>
+<!-- clear -->

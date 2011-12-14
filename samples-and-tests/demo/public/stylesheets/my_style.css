@@ -1,0 +1,60 @@
+@charset "utf-8";
+/* CSS Document */
+
+img.scale-up {
+    height: 230px;
+}
+img.scale-down {
+    height: 57px;
+}
+
+a {
+  color:#D95E16;
+  padding:0 2px;
+  text-decoration:none;
+}
+
+a:hover {
+  background-color:#FF813C;
+  color:#FFFFFF;
+}
+
+.submit-link {
+    color: #00f;
+    background-color: transparent;
+    text-decoration: underline;
+    width: 16px;
+    height: 16px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.reflect {
+    -webkit-box-reflect: below 4px -webkit-gradient(linear, left top, left bottombottom, from(transparent), color-stop(.7, transparent), to(white));
+}
+
+div.model-header {
+    color: #11689e;
+    /*font-variant: small-caps;*/
+    font-weight: 700;
+    padding-left: 5px;
+}
+
+div.model {
+    padding-left: 5px;
+}
+
+div.model:nth-child(odd) {
+    background: #FFF
+}
+
+div.model:nth-child(even) {
+    background: #CCC
+}
+
+span.model-field {
+
+}
+
+

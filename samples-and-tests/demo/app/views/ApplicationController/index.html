@@ -1,0 +1,57 @@
+#{extends 'layouts/layout.html' /}
+#{set title:'home' /}
+#{set 'moreStyles'}
+    #{stylesheet 'formee/formee-structure.css' /}
+    #{stylesheet 'formee/formee-style.css' /}
+    #{stylesheet 'my_style.css' /}<!-- my own css -->
+#{/set}
+#{set 'moreScripts'}
+    #{script 'formee/formee.js' /}
+    #{script 'application.js' /}
+#{/set}
+
+
+<!-- BEGIN #content .row -->
+<section id="content" role="container" class="row" >
+
+    <!-- BEGIN #maincontent .col_12-->
+    <section id="maincontent" class="col col_12" >
+        <h1>Authors</h1>
+
+        #{if flash.success}
+            <div id="flash-container" class="formee-msg-success">
+                <h3>&{flash.success}</h3>
+            </div>
+        #{/if}
+
+        <div class="model-header">
+            <span class="col col_2">FirstName</span>
+            <span class="col col_2">LastName</span>
+            <span class="clear"></span>
+        </div>
+        #{list authors}
+            <div class="model">
+                <span class="col col_2 model-field">${_.first_name}</span>
+                <span class="col col_2 model-field">${_.last_name}</span>
+                #{a @ApplicationController.edit(_.id), class:"col col_2 model-field align_center"}Edit#{/a}
+                #{a @ApplicationController.delete(_.id), class:"col col_2 model-field align_center"}Delete#{/a}
+                <span class="clear"></span>
+            </div>
+        #{/list}
+    </section>
+    <!-- END #maincontent .col_12-->
+
+    <!-- BEGIN #sidebar.col_4 -->
+    <aside id="sidebar" class="col col_4 clearfix" >
+        <h1>Secondary Content</h1>
+        <!--<div id="horizontal-sep-transparent" >&nbsp;</div>-->
+        <p>
+        Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio. Proin quis 			tortor orci. Etiam at risus et justo dignissim congue. Donec congue lacinia dui, a porttitor lectus condimentum laoreet. Nunc eu 			ullamcorper orci.</p>
+    </aside>
+    <!-- END #sidebar .col_4 -->
+
+</section>
+<!-- END #content .row -->
+
+<div class="clear" style="height:15px;"></div>
+<!-- clear -->

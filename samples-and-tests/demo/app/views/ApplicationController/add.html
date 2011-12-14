@@ -1,0 +1,83 @@
+#{extends 'layouts/layout.html' /}
+#{set title:'Create Author' /}
+#{set 'moreStyles'}
+    #{formee.css/}
+#{/set}
+#{set 'moreScripts'}
+    #{script 'formee/formee.js' /}
+    #{script 'formee/formee-validate.js' /}
+    #{script 'application.js' /}
+#{/set}
+
+<!-- BEGIN #content .row -->
+<section id="content" role="container" class="row" >
+
+    <!-- BEGIN #maincontent .col_12-->
+#{formee.form @ApplicationController.create(), class:'col col_8 push_4'}
+    <fieldset>
+        <legend>Author</legend>
+
+        #{ifErrors }
+            <div id="flash-container" class="formee-msg-error">
+                <h3>&{'global.form.msg.error'}</h3>
+            </div>
+        #{/ifErrors}
+
+        <div class="field h-block grid-12-12 formee-equal">
+            #{formee.field 'models.Author:author.first_name'} *{models.Author:author.first_name -> _name}*
+                <div class="grid-3-12">
+                    <label>&{field.name}<em class="formee-req">*</em></label>
+                </div>
+                <div class="grid-4-12">
+                    <input type="text" data-validate="${field.validationData}" id="${field.id}" name="${field.name}" value="${field?.value}" class="${field.errorClass}" />
+                    #{formee.error field.id}#{error field.name /}#{/formee.error}
+                </div>
+            #{/formee.field}
+        </div>
+        #{formee.clear/}
+
+        <div class="field h-block grid-12-12">
+            #{formee.field 'models.Author:author.last_name'}
+                <div class="grid-3-12">
+                    <label>&{field.name}<em class="formee-req">*</em></label>
+                </div>
+                <div class="grid-4-12">
+                    <input type="text" data-validate="${field.validationData}" id="${field.id}" name="${field.name}" value="${field?.value}" class="${field.errorClass}" />
+                    #{formee.error field.id}#{error field.name /}#{/formee.error}
+                </div>
+            #{/formee.field}
+        </div>
+        #{formee.clear/}
+
+        *{<div class="field h-block grid-12-12 formee-equal">}*
+            *{#{formee.field name:'models.Author:author.age'}}*
+                *{<div class="grid-3-12">}*
+                    *{<label>&{field.name}<em class="formee-req">*</em></label>}*
+                *{</div>}*
+                *{<div class="grid-4-12">}*
+                    *{<input type="text" data-validate="${field.validationData}" id="${field.id}" name="${field.name}" value="${field?.value}" class="${field.errorClass}" maxlength="3"/>}*
+                    *{#{formee.error field.id}#{error field.name /}#{/formee.error}}*
+                *{</div>}*
+            *{#{/formee.field}}*
+        *{</div>}*
+        <div class="field v-block grid-4-12 right formee-equal">
+            #{formee.field 'models.Author:author.age'}
+                <label>&{field.name}<em class="formee-req">*</em></label>
+                <input type="text" data-validate="${field.validationData}" id="${field.id}" name="${field.name}" value="${field?.value}" class="${field.errorClass}" maxlength="3"/>
+                #{formee.error field.id}#{error field.name /}#{/formee.error}
+            #{/formee.field}
+        </div>
+        #{formee.clear/}
+
+        <div class="grid-12-12">
+            <input class="right" type="submit" title="Add">
+        </div>
+    </fieldset>
+#{/formee.form}
+    <!-- END #maincontent .col_12-->
+
+</section>
+<!-- END #content .row -->
+
+<div class="clear" style="height:15px;"></div>
+<!-- clear -->

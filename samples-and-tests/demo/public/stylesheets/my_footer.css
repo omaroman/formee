@@ -1,0 +1,44 @@
+@charset "utf-8";
+/* CSS Document */
+
+footer.content {
+    /*text-decoration: underline;*/
+    color: white;
+
+}
+
+footer.content a {
+
+}
+
+footer.content article {
+    /*width: 480px;*/
+    /*max-width: 480px;*/
+    /*float: left;*/
+	/*position: relative;*/
+    /*padding: 5px;*/
+    background-color: #333333
+}
+
+footer.content article header{
+    margin: 5px 10px;
+}
+
+footer.content article p{
+    margin: 10px;
+}
+
+footer.content article.contactus {
+    background-color: #222222;
+}
+
+footer.content article.contactus section:last-child p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+footer.copyright {
+    margin-top: 10px;
+    border-top: 2px solid #ccc;
+    color: #9d9e9d;
+}

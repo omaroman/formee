@@ -1,0 +1,37 @@
+/* form elements  */
+
+/* For MORE THAN ONE label-input elements aligned horizontally */
+div.h-inline {
+    display: inline;
+}
+div.h-inline .formee-lbl, div.h-inline label {
+    padding-top: 20%;
+}
+.formee .h-inline .formee-txt, .formee .h-inline input[type="text"], .formee .h-inline input[type="password"], .formee .h-inline input[type="file"], .formee .h-inline textarea, .formee .h-inline select {
+    display: inline;
+}
+
+
+/* For ONLY ONE label-input elements aligned horizontally */
+div.h-block {
+    display: block;
+}
+div.h-block .formee-lbl, div.h-block label {
+    /*padding-top: 45%;*/
+    /*vertical-align: middle;*/
+}
+.formee .h-block .formee-txt, .formee .h-block input[type="text"], .formee .h-block input[type="password"], .formee .h-block input[type="file"], .formee .h-block textarea, .formee .h-block select {
+    display: block;
+}
+
+
+/* For MORE THAN ONE label-field elements are aligned vertically (default)*/
+div.v-block {
+    display: block;
+}
+
+
+/* For field error message */
+div.field span.error, div span.error {
+    color: red;
+}
