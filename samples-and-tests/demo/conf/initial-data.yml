@@ -1,9 +1,10 @@
 # Initial Data
 
 Author(a1):
-    age:          30
+    age:            30
     first_name:     Hombre
     last_name:      Radioactivo
+    mastermind:     false
 
 Quote(q1):
     author:         a1

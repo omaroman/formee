@@ -23,9 +23,10 @@
                 </div>
             #{/ifErrors}
 
-            #{formee.h_block 'models.Author:author.first_name', object:author, label_col:3, input_col:4, required:true /}
-            #{formee.h_block 'models.Author:author.last_name', object:author, label_col:3, input_col:4, required:true /}
-            #{formee.h_block 'models.Author:author.age', object:author, label_col:3, input_col:4, required:true /}
+            #{formee.h_block 'author.first_name', model:"models.Author", for:author, type:'text', label_col:3, input_col:4, required:true /}
+            #{formee.h_block 'author.last_name', model:"models.Author", for:author, type:'text', label_col:3, input_col:4, required:true /}
+            #{formee.h_block 'author.age', model:"models.Author", for:author, type:'text', label_col:3, input_col:4, required:true /}
+            #{formee.h_block 'author.mastermind', model:"models.Author", for:author, type:'checkbool', label_col:3, input_col:4 /}
 
             <div class="grid-12-12">
                 <input class="right" type="submit" title="Add">

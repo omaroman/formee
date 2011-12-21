@@ -1,0 +1,450 @@
+package tags;
+
+import groovy.lang.Closure;
+
+import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.util.*;
+
+
+import org.apache.commons.lang.StringUtils;
+import play.Logger;
+import play.data.validation.*;
+import play.i18n.Messages;
+import play.modules.formee.Formee;
+import play.modules.formee.FormeeValidation;
+import play.mvc.Scope.Flash;
+import play.templates.BaseTemplate;
+import play.templates.FastTags;
+import play.templates.JavaExtensions;
+import play.templates.GroovyTemplate.ExecutableTemplate;
+
+@FastTags.Namespace("formee")
+public class FormeeTags extends FastTags {
+
+    /**
+     * Generates a html form element linked to a controller action
+     * @param args tag attributes
+     * @param body tag inner body
+     * @param out the output writer
+     * @param template enclosing template
+     * @param fromLine template line number where the tag is defined
+     */
+//    public static void _form2(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
+//        ActionDefinition actionDef = (ActionDefinition) args.get("arg");
+//        if (actionDef == null) {
+//            actionDef = (ActionDefinition) args.get("action");
+//        }
+//        String enctype = (String) args.get("enctype");
+//        if (enctype == null) {
+//            enctype = "application/x-www-form-urlencoded";
+//        }
+//        if (actionDef.star) {
+//            actionDef.method = "POST"; // prefer POST for form ....
+//        }
+//        if (args.containsKey("method")) {
+//            actionDef.method = args.get("method").toString();
+//        }
+//        String cssClass = "formee";
+//        if (args.containsKey("class")) {
+//            cssClass = String.format("%s %s", args.get("class"), cssClass);
+//        }
+//        if (!("GET".equals(actionDef.method) || "POST".equals(actionDef.method))) {
+//            String separator = actionDef.url.indexOf('?') != -1 ? "&" : "?";
+//            actionDef.url += separator + "x-http-method-override=" + actionDef.method.toUpperCase();
+//            actionDef.method = "POST";
+//        }
+//        String id = args.containsKey("id") ? (String) args.get("id") : "formee__" + UUID.randomUUID();
+//        out.println("<form class='" + cssClass + "' id='" + id + "' action='" + actionDef.url + "' method='" + actionDef.method.toUpperCase() + "' accept-charset='utf-8' enctype='" + enctype + "' " + serialize(args, "class", "action", "method", "accept-charset", "enctype") + ">");
+//        if (!("GET".equals(actionDef.method))) {
+//            _authenticityToken(args, body, out, template, fromLine);
+//        }
+//        out.println(JavaExtensions.toString(body));
+//        out.println("</form>");
+//    }
+
+    public static void _form(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
+        if (args.containsKey("class")) {
+            ((Map<Object, Object>) args).put("class", args.remove("class") + " formee");
+        } else {
+            ((Map<Object, Object>) args).put("class", "formee");
+        }
+        if (args.get("for") != null) {
+            BaseTemplate.layoutData.get().put("_editObject_", args.remove("for"));
+        }
+
+        FastTags._form(args, body, out, template, fromLine);
+    }
+
+    /**
+     * The field tag is a helper, based on the spirit of Don't Repeat Yourself.
+     * @param args tag attributes
+     * @param body tag inner body
+     * @param out the output writer
+     * @param template enclosing template
+     * @param fromLine template line number where the tag is defined
+     */
+    public static void _field(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
+        Map<String,Object> fieldMap = new HashMap<String,Object>();
+        String _arg = args.get("arg").toString();
+
+        // Get a Field obj via reflection
+//        int offset = _arg.indexOf(':');
+//        if (offset != -1) {
+//            String clazz = _arg.substring(0, offset);    // Get the full qualified class name
+//            _arg = _arg.substring(offset+1);   // remove the full qualified class name
+//            try {
+//                Object o = Class.forName(clazz).newInstance();
+//                Field f = o.getClass().getField(_arg.split("\\.")[1]);
+//                field.put("validationData", buildValidationDataString(f));  // Fills data-validate
+//            } catch (Exception e) {
+//                // DO NOT try to get any field
+//            }
+//        }
+
+//        Logger.debug("CLASS_FIELD_VALIDATION");
+//        for (String model : FormeeValidation.getInstance().getModelFieldValidation().keySet()) {
+//            for (String field : FormeeValidation.getInstance().getModelFieldValidation().get(model).keySet()) {
+//                String dataValidation = FormeeValidation.getInstance().getModelFieldValidation().get(model).get(field);
+//                Logger.debug("%s - %s - %s", model, field, dataValidation);
+//            }
+//        }
+
+        Map.Entry<String, String> modelField = getModelField(args);
+
+        if (args.get("model") != null) {
+            Logger.debug("MODEL %s", args.get("model"));
+            String field = StringUtils.split(_arg, '.')[1];  // TODO: Enhance this
+            String model = args.get("model").toString();
+            fieldMap.put("fqn", String.format("%s.%s", model, field));
+        }
+
+        if (args.get("forTMP") != null) {
+            if (args.containsKey("value")) {
+                args.remove("value");
+            }
+//            if (args.containsKey("data-validate")) {
+//                args.remove("data-validate");
+//            }
+
+            // TODO: Get validationData
+            // 1. Get model from 'for'
+            String model = modelField.getKey();
+//            Logger.debug("MODEL: %s", model);
+            // 2. Get field from 'for'
+            String field = modelField.getValue();
+//            Logger.debug("FIELD: %s", field);
+            // 3. Get dataValidation from FormeeValidation -> Map<Model, Map<Field, DataValidation>>
+            //Map<String, Map<String,String>> classFieldValidation = FormeeValidation.getInstance().getModelFieldValidation();
+            //Map<String, String> fieldValidation = classFieldValidation.get(model);
+            //String dataValidation = fieldValidation.get(field);
+            
+//            Logger.debug("DATA_VALIDATION: %s", dataValidation);
+//            String dataValidation = FormeeValidation.getInstance().getModelFieldValidation().get(model).get(field);
+
+            if (modelField != null) {
+                try {
+//                    ((Map<Object, Object>) args).put("value", getDefaultValue(modelField));
+//                    ((Map<Object, Object>) args).put("data-validate", dataValidation);
+                    Field f = Class.forName(model).getDeclaredField(field);
+                    String dataValidation = Formee.buildValidationDataString(f);
+//                    Logger.debug("DATA_VALIDATION: %s", dataValidation);
+//                    ((Map<Object, Object>) args).put("data-validate", dataValidation);  // Fills data-validate
+
+                    fieldMap.put("value", getDefaultValue(modelField));
+                    fieldMap.put("data-validate", dataValidation);  // Fills data-validate
+
+
+                    // TODO Get variable name
+                    ((Map<Object, Object>) args).put("arg", args.get("for")+"."+field);  // Fills data-validate
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+//        for (Object key : args.keySet()) {
+//            Logger.debug("key [%s] -> value [%s]", key, args.get(key));
+//        }
+
+//        FastTags._field(args, body, out, template, fromLine);
+        
+        fieldMap.put("name", _arg);
+        fieldMap.put("id", _arg.replace('.','_'));
+//        field.put("idError", _arg.replace('.','_') + "_error");
+        fieldMap.put("flash", Flash.current().get(_arg));
+        fieldMap.put("flashArray", fieldMap.get("flash") != null && !StringUtils.isEmpty(fieldMap.get("flash").toString()) ? fieldMap.get("flash").toString().split(",") : new String[0]);
+        fieldMap.put("error", Validation.error(_arg));
+        fieldMap.put("errorClass", fieldMap.get("error") != null ? "hasError" : "");
+
+//        String[] pieces = _arg.split("\\.");
+//        Object obj = body.getProperty(pieces[0]);
+//        if (obj != null) {
+//            if(pieces.length > 1) {
+//                for(int i = 1; i < pieces.length; i+=2) {   // TODO: Submit enhancement
+//                    try{
+//                        Field f = obj.getClass().getField(pieces[i]);
+//                        if (i == (pieces.length-1)) {
+////                            try{
+////                                Method getter = obj.getClass().getMethod("get"+JavaExtensions.capFirst(f.getName()));
+////                                fieldMap.put("value", getter.invoke(obj, new Object[0]));
+////                            }catch(NoSuchMethodException e){
+////                                fieldMap.put("value",f.get(obj).toString());
+////                            }
+//                        } else {
+//                            obj = f.get(obj);
+//                        }
+//                    } catch(Exception e) {
+//                        // if there is a problem reading the field we dont set any value
+//                    }
+//                }
+//            } else {
+////                fieldMap.put("value", obj);
+//            }
+//        }
+
+        try {
+            fieldMap.put("value", getDefaultValue(modelField));
+        } catch (Exception e) {
+            fieldMap.put("value", "");
+        }
+
+        body.setProperty("field", fieldMap);
+        body.call();
+    }
+
+    public static void _label(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
+        // TODO: Check if there's "arg" argument
+        // TODO: Throw illegal argument exception
+        StringBuilder html = new StringBuilder();
+        html.append("<label>");
+        html.append(Messages.get(args.get("arg")));
+        if (args.get("required") != null) {
+            if (Boolean.parseBoolean(args.get("required").toString())) {    // TODO: Check if it's castable
+                html.append("<em class='formee-req'>*</em>");
+            }
+        }
+        html.append("</label>");
+        out.println(html.toString());
+    }
+
+    /**
+     * The field tag is a helper, based on the spirit of Don't Repeat Yourself.
+     * @param args tag attributes
+     * @param body tag inner body
+     * @param out the output writer
+     * @param template enclosing template
+     * @param fromLine template line number where the tag is defined
+     */
+    public static void _error(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
+        Map.Entry<String, String> modelField = getModelField(args);
+
+        String _arg = "";
+        if (modelField != null) {
+            _arg = String.format("%s.%s", getSimpleModelName(modelField.getKey()).toLowerCase(), modelField.getValue());
+        }
+
+//        String tag = "span";    // Error container element
+
+        String cssClass = "error";
+        if (args.containsKey("class")) {
+            cssClass = String.format("%s %s", args.get("class"), cssClass);
+        }
+
+        StringBuilder html = new StringBuilder();
+        html.append("<span");
+        html.append(" for='").append(_arg.replace('.', '_')).append("'");
+        html.append(" class='").append(cssClass).append("'");
+        html.append(" generated='true'");
+        html.append(serialize(args, "class"));
+        html.append(">");
+
+//        out.println("<" + tag + " for='" + _arg +"' class='" + cssClass + "' generated='true'" + serialize(args, "class") + ">");
+        out.println(html.toString());
+        out.println(JavaExtensions.toString(body));
+        out.println("</span>");
+    }
+
+    public static void _text(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) throws Exception {
+        Map.Entry<String, String> modelField = getModelField(args);
+        String dataValidation = getDataValidation(modelField);
+
+        String textInput = "<input type='text' data-validate='%s' class='%s' id='%s' name='%s' value='%s' %s />";
+        textInput = formatHtmlElementAttributes(args, textInput, modelField, dataValidation);
+        out.print(textInput);
+        if (body != null) {
+            out.print(String.format(JavaExtensions.toString(body), checkForConfirmElement(body, textInput)));
+        }
+    }
+
+    /**
+     * Generates a html input element of type password linked to a field in
+     * model and validated accordingly.
+     *
+     * @param args tag attributes
+     * @param body tag inner body
+     * @param out the output writer
+     * @param template enclosing template
+     * @param fromLine template line number where the tag is defined
+     * @throws Exception -
+     *
+     */
+    public static void _pass(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) throws Exception {
+        Map.Entry<String, String> modelField = getModelField(args);
+        String dataValidation = getDataValidation(modelField);
+
+        String passInput = "<input type='password' data-validate='%s' class='%s' id='%s' name='%s' value='%s' %s/>";
+        passInput = formatHtmlElementAttributes(args, passInput, modelField, dataValidation);
+        out.print(passInput);
+        if (body != null) {
+            out.print(String.format(JavaExtensions.toString(body), checkForConfirmElement(body, passInput)));
+        }
+    }
+
+    /**
+     * Generates a formatted HTML element linked to a certain model field given
+     * a string representation for this element.
+     * @param args the calling tag attributes
+     * @param htmlElement String representation for this element contains placeHolders (%s) to embedd in it its attributes values.
+     * @param modelField the return of this method {@link VTags#getModelField(Map)}
+     * @param dataValidation -
+     * @return String representing the HTML element after embedding the attributes and the validation in it.
+     * @throws Exception -
+     */
+    static String formatHtmlElementAttributes(Map<?, ?> args, String htmlElement, Map.Entry<String, String> modelField, String dataValidation) throws Exception {
+        Object id = args.remove("id");
+        Object _class = args.remove("class");
+        Object name = args.remove("name");
+        Object value = null;
+        if (modelField != null) {
+            value = getDefaultValue(modelField);
+        }
+        if (value == null) {
+            value = "";
+        }
+
+//        if (name == null && id == null) {
+//            name = (modelField == null ? "nullField" : modelField.getValue());
+//            id = name;
+//        } else if (id == null) {
+//            id = name;
+//        } else if (name == null) {
+//            name = id;
+//        }
+
+        if (id == null && modelField != null) {
+            id = String.format("%s_%s", getSimpleModelName(modelField.getKey()).toLowerCase(), modelField.getValue());
+        }
+        
+        if (name == null && modelField != null) {
+            name = String.format("%s.%s", getSimpleModelName(modelField.getKey()).toLowerCase(), modelField.getValue());
+        }
+
+        if (_class == null) {
+            _class = (modelField == null ? "nullField" : modelField.getValue());
+        }
+
+        return String.format(htmlElement, dataValidation, _class, id, name, value, serialize(args));
+    }
+
+    /**
+     * Gets the model name & the field name from a map of arguments by the key
+     * "field" and puts them in an array.
+     * @param args tag attributes
+     * @return Map.Entry representing the Model as key and the Field as value
+     * @throws IllegalArgumentException if the field argument doesn't contain the model name or the field name
+     */
+    static Map.Entry<String, String> getModelField(Map<?,?> args) {
+        // TODO: Check if there's "arg" argument
+        // TODO: Throw illegal argument exception
+//        Object name = args.remove("arg");
+        Object name = args.get("arg");
+        if (name == null) {
+            return null;
+        }
+        
+        List<String> tokens = new ArrayList<String>(Arrays.asList(StringUtils.split(name.toString(), '.')));
+        String field = tokens.remove(tokens.size() - 1);
+        String model = StringUtils.join(tokens, '.');
+        return new AbstractMap.SimpleEntry<String, String>(model, field);
+    }
+
+    /**
+     * Gets the value of the field, represented by its name in the
+     * {@code modelField[1]}, from the Object specified in the
+     * {@link VTags#_vform(Map, Closure, PrintWriter, ExecutableTemplate, int)}
+     * {@code edit} argument.
+     *
+     * @param modelField
+     *            String[] contains the name of the field in [1].
+     * @return the value of the field in an object returned from the map of
+     *         properties in the current template under the key "_editObject_"
+     * @throws Exception
+     *             see method {@link #getFieldValue(Object, String)}
+     */
+    static Object getDefaultValue(Map.Entry<String, String> modelField) throws Exception {
+        if (modelField != null && BaseTemplate.layoutData.get().containsKey("_editObject_")) {
+            Object obj = BaseTemplate.layoutData.get().get("_editObject_");
+            return getFieldValue(obj, modelField.getValue());
+        }
+        return "";
+    }
+
+    /**
+     * Uses reflection to get the value of a field, represented by its name,
+     * from <code>Object obj</code>
+     *
+     * @param obj
+     *            object to get the value of the field from.
+     * @param fieldName
+     *            name of the desired field.
+     * @return the value of the field from the object
+     * @throws Exception
+     *             specified by these methods {@link Class#getField(String)} &
+     *             {@link Field#get(Object)}
+     */
+    static Object getFieldValue(Object obj, String fieldName) throws Exception {
+        try {
+            return obj.getClass().getField(fieldName).get(obj);
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    private static Object checkForConfirmElement(Closure body, String html) {
+        if (body != null) {
+            return formatConfirmElement(html);
+        } else {
+            return null;
+        }
+    }
+
+    private static Object formatConfirmElement(String html) {
+        int startIndexOfId = html.indexOf("id=\"") + 4;
+        int endIndexOfId = html.indexOf("\"", startIndexOfId);
+        String id = html.substring(startIndexOfId, endIndexOfId);
+        return html.replace("id=\"" + id + "\"", "id=\"" + id + "Confirm\"");
+    }
+    
+    private static String getDataValidation(Map.Entry<String, String> modelField) {
+        String model = modelField.getKey();
+        String field = modelField.getValue();
+        // Get dataValidation from FormeeValidation -> Map<Model, Map<Field, DataValidation>>
+        Map<String, Map<String,String>> classFieldValidation = FormeeValidation.getInstance().getModelFieldValidation();
+        Map<String, String> fieldValidation = classFieldValidation.get(model);
+        String dataValidation = fieldValidation.get(field);
+
+        return dataValidation;
+    }
+    
+    private static String getSimpleModelName(String model) {
+        if (!StringUtils.contains(model, '.')) {
+            return model;
+        }
+
+        String[] tokens = StringUtils.split(model, '.');
+        String simpleModelName = tokens[tokens.length - 1];
+
+        return simpleModelName;
+    }
+}

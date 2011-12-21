@@ -17,9 +17,10 @@
         <fieldset>
             <legend>Author</legend>
 
-            #{formee.v_block 'models.Author:author.first_name', object:author, col:4, required:true /}
-            #{formee.v_block 'models.Author:author.last_name', object:author, col:4, required:true /}
-            #{formee.v_block 'models.Author:author.age', object:author, col:4, required:true /}
+            #{formee.v_block 'author.first_name', model:'models.Author', for:author, type:'text', col:4, required:true /}
+            #{formee.v_block 'author.last_name', model:'models.Author', for:author, type:'text', col:4, required:true /}
+            #{formee.v_block 'author.age', model:'models.Author', for:author, col:4, type:'text', required:true /}
+            #{formee.v_block 'author.mastermind', model:"models.Author", for:author, type:'checkbool', col:4 /}
 
             <div class="grid-12-12">
                 <input class="right" type="submit" title="Add">

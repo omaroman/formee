@@ -59,13 +59,11 @@ public class ApplicationController extends Controller {
         if (author == null) {
             notFound();
         } else {
-            System.out.println("EDIT ---> " + id);
             render(author);
         }
     }
     
     public static void update(@Valid Author author) {
-        System.out.println("UPDATE ---> " + author.id);
         if (Validation.hasErrors()) {
             render("@edit", author);
         }

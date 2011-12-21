@@ -7,8 +7,12 @@ package models;
 
 import play.data.validation.Min;
 import play.data.validation.Required;
+import play.data.validation.Unique;
+import play.db.jpa.Model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "authors")
@@ -18,4 +22,5 @@ public class Author extends AuthorAbs {
     @Min(15)
     public int age;   // Just for testing purposes
 
+    public boolean mastermind;
 }

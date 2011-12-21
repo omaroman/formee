@@ -1,29 +1,15 @@
-*{Args: arg, object, type, label_col, input_col, required}*
+*{Args: arg, model, type, label_col, input_col, [required]}*
 
-#{if _type == null}
-    #{set _type:'text'/}    *{ Default type of input }*
-#{/if}
-
-%{String classAttr = "field h-block grid-12-12 formee-equal ${_class}" }%
-
-%{
-    def val = ""
-    if (_object != null) {
-        def obj_fld = _arg.split(':')[1]
-        int idx = obj_fld.indexOf('.') + 1
-        def field = obj_fld.substring(idx)
-        val = org.apache.commons.beanutils.PropertyUtils.getProperty(_object, field);
-    }
-}%
+%{String classAttr = "field h-block grid-12-12 formee-equal " + (_class ?: "") }%
 
 <div class="${classAttr}">
-    #{formee.field _arg} *{models.Author:author.first_name -> _arg}*
+    #{formee.field _arg, model:_model} *{author.first_name -> _arg, models.Author -> model}*
         <div class="grid-${_label_col}-12">
-            <label>&{field.name}#{if _required}<em class="formee-req">*</em>#{/if}</label>
+            #{formee.label field.fqn, required:_required /}
         </div>
         <div class="grid-${_input_col}-12">
-            <input type="${_type}" data-validate="${field.validationData}" id="${field.id}" name="${field.name}" value="${field.value ?: val}" class="${field.errorClass}" />
-            #{formee.error field.id}#{error field.name /}#{/formee.error}
+            #{formee.input field.fqn, type:_type, class:field.errorClass /}
+            #{formee.error field.fqn}#{error field.name /}#{/formee.error}
         </div>
     #{/formee.field}
 </div>

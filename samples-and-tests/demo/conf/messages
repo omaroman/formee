@@ -19,9 +19,10 @@ layout.footer.contact.email=omaroman@gmail.com
 global.form.msg.error=Can you fix please?
 
 # Models
-author.first_name=First name
-author.last_name=Last name
-author.age=Age
+models.Author.first_name=First name
+models.Author.last_name=Last name
+models.Author.age=Age
+models.Author.mastermind=Mastermind
 
 # Views
 views.author.create.msg=Author created successfully!

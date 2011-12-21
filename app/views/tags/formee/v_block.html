@@ -1,25 +1,11 @@
-*{Args: arg, object, type, col, required}*
+*{Args: arg, model, for, type, col, [required]}*
 
-#{if _type == null}
-    #{set _type:'text'/}    *{ Default type of input }*
-#{/if}
-
-%{String classAttr = "field v-block grid-${_col}-12 formee-equal ${_class}" }%
-
-%{
-    def val = ""
-    if (_arg != null) {
-        def obj_fld = _name.split(':')[1]
-        int idx = obj_fld.indexOf('.') + 1
-        def field = obj_fld.substring(idx)
-        val = org.apache.commons.beanutils.PropertyUtils.getProperty(_arg, field);
-    }
-}%
+%{String classAttr = "field v-block grid-${_col}-12 formee-equal " + (_class ?: "") }%
 
 <div class="${classAttr}">
-    #{formee.field _arg} *{models.Author:author.first_name -> _name}*
-        <label>&{field.name}#{if _required}<em class="formee-req">*</em>#{/if}</label>
-        <input type="${_type}" data-validate="${field.validationData}" id="${field.id}" name="${field.name}" value="${field.value ?: val}" class="${field.errorClass}" />
+    #{formee.field _arg, model:_model} *{models.Author:author.first_name -> _name}*
+        #{formee.label field.fqn, required:_required /}
+        #{formee.input field.fqn, type:_type, class:field.errorClass /}
         #{formee.error field.id}#{error field.name /}#{/formee.error}
     #{/formee.field}
 </div>

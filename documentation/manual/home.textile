@@ -9,8 +9,6 @@ h2. Features
 
 h2. Getting started
 
-p(note). Describe any installation that is required, beyond adding and resolving the module dependency.
-
 - Add this module to your dependecy.yml file
 - This module depends on jQuery library.
 
@@ -52,6 +50,12 @@ Params:
     <dd>The identifier of the form. It's optional</dd>
 </dl>
 
+<pre><code>
+#{formee.field 'package.Entity:object.field'}
+    ...
+#{/formee.field}
+</code></pre>
+
 h3. formee.field
 
 The *formee.field* tag is identical to the built-in Play field tag except it puts an extra property on the field, `field.validationData`. You need to put this data in an HTML5 data attribute called `data-validate` on your `input`, `select`, or `textarea` element.
@@ -62,15 +66,17 @@ Params:
     <dd>full qualified model class + : + </dd>
 </dl>
 
-<code>
-    #{formee.field 'package.Entity:object.field'}
-        <div>
-            <label>&{field.name}</label>
-            <input type="text" data-validate="${field.validationData}" id="${field.id}" name="${field.name}" value="${field.value}" class="${field.errorClass}">
-            <span class="error">${field.error}</span>
-        </div>
-    #{/formee.field}
-</code>
+<pre><code>
+#{formee.field 'package.Entity:object.field'}
+    ...
+#{/formee.field}
+</code></pre>
+
+bc. #{formee.field 'package.Entity:object.field'}
+    <label>&{field.name}</label>
+    <input type="text" data-validate="${field.validationData}" id="${field.id}" name="${field.name}" value="${field.value}" class="${field.errorClass}">
+    <span class="error">${field.error}</span>
+#{/formee.field}
 
 h3. formee.error
 

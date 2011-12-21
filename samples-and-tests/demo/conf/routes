@@ -17,7 +17,7 @@ GET     /author/add_v                           ApplicationController.add_v
 POST    /author/create_v                        ApplicationController.create_v
 GET     /author/add                             ApplicationController.add
 POST    /author/create                          ApplicationController.create
-POST    /author/{id}/edit                       ApplicationController.edit
+GET     /author/{id}/edit                       ApplicationController.edit
 POST    /author/{id}/delete                     ApplicationController.delete
 
 # Catch all
