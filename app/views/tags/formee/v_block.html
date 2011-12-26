@@ -1,11 +1,11 @@
-*{Args: arg, model, for, type, col, [required]}*
+*{Args: arg, for, for, type, col, [required]}*
 
 %{String classAttr = "field v-block grid-${_col}-12 formee-equal " + (_class ?: "") }%
 
 <div class="${classAttr}">
-    #{formee.field _arg, model:_model} *{models.Author:author.first_name -> _name}*
-        #{formee.label field.fqn, required:_required /}
-        #{formee.input field.fqn, type:_type, class:field.errorClass /}
-        #{formee.error field.id}#{error field.name /}#{/formee.error}
+    #{formee.field _arg, for:_for} *{field_name -> _arg, models.Author.field_name -> for}*
+        #{formee.label _label, for:field.for, required:_required /}
+        #{formee.input for:field.for, type:_type, class:field.errorClass /}
+        #{formee.error for:field.for}#{error field.name /}#{/formee.error}
     #{/formee.field}
 </div>

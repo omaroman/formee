@@ -1,16 +1,21 @@
 h1. Formee
 
-*_Formee_* not only takes care of html forms designs, but also validates its data from both client-side and server-side based on model validation annotations in a homogeneous way.
+*_Formee_* not only takes care of html forms designs, but also validates its data from both client-side and server-side based on model validation annotations.
 
 h2. Features
 
-- It has all the features of "formee":http://formee.org/ framework
-- Validates data from Client-side by using "jquery.validate":http://bassistance.de/jquery-plugins/jquery-plugin-validation/ plug-in
+- It has all the features of _formee_
+- Automate validations from client-side based on Play model annotations by using _jquery.validate_ plugin.
+- Homogeneous error messages from both client-side and server-side, i.e., they appear in the same place.
 
 h2. Getting started
 
 - Add this module to your dependecy.yml file
 - This module depends on jQuery library.
+
+p(note). @Unique ---> default message is missing
+
+h2. Usage
 
 Include the following files in your views containing forms:
 
@@ -20,67 +25,250 @@ Include the following files in your views containing forms:
 # formee/formee-style.css
 - javascripts:
 # formee/formee.js
-# formee/formee-validate.js WHAT 'BOUT THE min VERSION
 
-The _formee-validate.js_ script contains copies of the [jQuery Validation Plugin] and the [jQuery Metadata Plugin]
-
-h2. Usage
-
-@Unique ---> default message is missing
-
-p(note). Explain how to use the module, and describe any routes, controllers, models or views that the module provides.
+p(note). The _formee-validate.js_ script contains copies of the [jQuery Validation Plugin] and the [jQuery Metadata Plugin]
 
 h2. Fast Tags
 
-h3. formee.form
+*First things first*, every standard attribute that supports a html tag not listed here is optional.
+
+h3. formee.form (HTML4)
 
 The *formee.form* tag is identical to the built-in Play form tag except it outputs some JavaScript that prepares the form to be validated by the jQuery validation plugin.
 
 Params:
 <dl>
-    <dt>action, default value</dt>
-    <dd>Designa la ubicación del archivo que manejará las entradas del formulario</dd>
-    <dt>method</dt>
-    <dd>El atributo "method" define cómo la información de un formulario es enviada al agente procesador. Existen dos valores posibles para este atributo (insensibles a mayúsculas/minúsculas):
-        get: Los datos del formulario son agregados a la URI definida en el atributo "action" (por ejemplo, manejador.php?pnombre=jhon&papellido=malcovich).
-        post: Los datos del formulario son agregados al cuerpo del formulario.</dd>
-    <dt>enctype</dt>
-    <dd>Especifica el tipo de contenido de la información enviada, cuando el valor del atributo "method" es "post"</dd>
-    <dt>id</dt>
-    <dd>The identifier of the form. It's optional</dd>
+    <dt>_arg_ (the implicit required argument)</dt>
+    <dd>the action to be invoked after submitting</dd>
+    <dt>obj</dt>
+    <dd>the model object from which the form will get the values either for editing or adding (after error submitting, so that the user doesn't have to fill every correct value again)</dd>
+    <dt>method (optional)</dt>
+    <dd>if not specified POST by default</dd>
+    <dt>enctype (optional)</dt>
+    <dd>Determines how the form data is encoded. Whenever data is transmitted from one place to another, there needs to be an agreed upon means of representing that data. Music is translated into written music notation, English is written using letters and punctuation.
+    In most cases you will not need to use this attribute at all. The default value (i.e. if you don't use this attribute at all) is "application/x-www-form-urlencoded", which is sufficient for almost any kind of form data. The one exception is if you want to do file uploads. In that case you should use "multipart/form-data"</dd>
 </dl>
 
-<pre><code>
-#{formee.field 'package.Entity:object.field'}
+p(note). _In adding mode_, from Controller send an instantiated object:
+E.g.,
+public static void add() {
+    Model model = new Model();
+    render(model);
+}
+
+bc. #{formee.form @Controller.action(), obj:model}
     ...
-#{/formee.field}
-</code></pre>
+#{/formee.form}
+
+Produces
+
+bc. <form action="/route/to/action" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded" class="formee" >
+    <input type="hidden" name="authenticityToken" value="...">
+    ...
+</form>
 
 h3. formee.field
 
-The *formee.field* tag is identical to the built-in Play field tag except it puts an extra property on the field, `field.validationData`. You need to put this data in an HTML5 data attribute called `data-validate` on your `input`, `select`, or `textarea` element.
+The *formee.field* tag is identical to the built-in Play field tag except it puts two extra properties on the field:
+- _*field.validationData*_ You need to put this data in an HTML5 data attribute called _data-validate_ on your _input_, _select_, or _textarea_ element.
+- _*field.for*_ The full qualified name of a field, i.e. package.Model.field
 
 Params:
 <dl>
-    <dt>The required argument is the name...</dt>
-    <dd>full qualified model class + : + </dd>
+    <dt>_arg_ (implicit optional argument)</dt>
+    <dd>the name of the model object</dd>
+    <dt>for</dt>
+    <dd>full qualified name of a field, i.e. package.Model.field</dd>
 </dl>
 
-<pre><code>
-#{formee.field 'package.Entity:object.field'}
-    ...
-#{/formee.field}
-</code></pre>
+p(note). If _arg_ is not provided, then, by convention, the name of the model object will be the model name converted to underscore_case
 
-bc. #{formee.field 'package.Entity:object.field'}
+p(note). Provide _arg_ if the name of model object being passed to a template doesn't follow the underscore_case convention.
+
+bc. #{formee.field for:'package.Model.field'}
     <label>&{field.name}</label>
     <input type="text" data-validate="${field.validationData}" id="${field.id}" name="${field.name}" value="${field.value}" class="${field.errorClass}">
     <span class="error">${field.error}</span>
 #{/formee.field}
 
-h3. formee.error
+Produces
 
-The *formee.error* tag is identical to the built-in Play error tag except it outputs some JavaScript that prepares the form to be validated by the jQuery validation plugin.
+bc. <label>...</label>
+<input type="text" data-validate={...} id="model_object_field_name" name="model_object.field_name" value="..." class="..."/>
+<span class="error">...</span>
+
+h3. formee.label (HTML4)
+
+The *formee.label* tag simplifies the creation of label element...
+
+Params:
+<dl>
+    <dt>_arg_ (the implicit optional argument)</dt>
+    <dd>the name of the model object</dd>
+    <dt>msg</dt>
+    <dd>label text</dd>
+    <dt>for (optional)</dt>
+    <dd>full qualified name of a field, i.e. package.Model.field</dd>
+    <dt>required (optional)</dt>
+    <dd>a boolean value for indicating, visually, if it's required</dd>
+</dl>
+
+p(note). If _msg_ is not provided, then by convention from _for_ tries to get an internationalized message, it there's no such message, then writes the last token of _for_, i.e., from package.Model.field gets just field
+
+p(note). If neither _msg_ nor _for_ are provided, then an exception is thrown.
+
+bc. #{formee.label for:'package.Model.field', required:true /}
+
+Produces
+
+bc. <label>First name<em class='formee-req'>*</em></label>
+
+h3. formee.error (HTML4)
+
+The *formee.error* tag is very similar to the built-in Play error tag except it wraps the error message into a span element and outputs some JavaScript that prepares the element to be used by the jQuery validation plugin.
+It's highly suggested to use it in conjunction with built-in Play _error_ tag.
+
+Params:
+<dl>
+    <dt>for (required argument)</dt>
+    <dd>full qualified name of a field, i.e. package.Model.field</dd>
+</dl>
+
+bc. #{formee.error for:'package.Model.field' }#{error 'object.field' /}#{/formee.error}
+
+Produces
+
+bc. <span for='input_element_id' class='error' generated='true'>...</span>
+
+h3. formee.input (HTML4)
+
+The *formee.input* tag generates any input type: *text, textarea, password, hidden, checkbox, radio, checkbool*.
+
+Params:
+<dl>
+    <dt>_arg_ (implicit optional argument)</dt>
+    <dd>the name of the model object</dd>
+    <dt>for (required argument)</dt>
+    <dd>full qualified name of a field, i.e. package.Model.field</dd>
+    <dt>type</dt>
+    <dd>the input type</dd>
+</dl>
+
+p(note). If _arg_ is not provided, then, by convention, the name of the model object will be the model name converted to underscore_case
+
+p(note). Provide _arg_ if the name of model object being passed to a template doesn't follow the underscore_case convention.
+
+Tag
+
+bc. #{formee.input for:'package.Model.field', type:'text' /}
+
+Produces
+
+bc. <input type="text" data-validate="{...}" class id="model_field" name="model.field" value/>
+
+h3. formee.text (HTML4)
+
+The *formee.text* tag generates an input element of type _text_
+
+Params:
+<dl>
+    <dt>_arg_ (implicit optional argument)</dt>
+    <dd>the name of the model object</dd>
+    <dt>for (required argument)</dt>
+    <dd>full qualified name of a field, i.e. package.Model.field</dd>
+</dl>
+
+p(note). If _arg_ is not provided, then, by convention, the name of the model object will be the model name converted to underscore_case
+
+p(note). Provide _arg_ if the name of model object being passed to a template doesn't follow the underscore_case convention.
+
+Tag
+
+bc. #{formee.text for:'package.Model.field' /}
+
+Produces
+
+bc. <input type="text" data-validate="{...}" class id="model_field" name="model.field" value/>
+
+h3. formee.textarea (HTML4)
+
+The *formee.textarea* tag generates an input element of type _text_
+
+Params:
+<dl>
+    <dt>_arg_ (implicit optional argument)</dt>
+    <dd>the name of the model object</dd>
+    <dt>for (required argument)</dt>
+    <dd>full qualified name of a field, i.e. package.Model.field</dd>
+</dl>
+
+p(note). If _arg_ is not provided, then, by convention, the name of the model object will be the model name converted to underscore_case
+
+p(note). Provide _arg_ if the name of model object being passed to a template doesn't follow the underscore_case convention.
+
+Tag
+
+bc. #{formee.textarea for:'package.Model.field' /}
+
+Produces
+
+bc. <textarea data-validate="{...}" class id="model_field" name="model.field">...</textarea>
+
+h3. formee.password (HTML4)
+
+The *formee.password* tag generates an input element of type _password_
+
+Params:
+<dl>
+    <dt>_arg_ (implicit optional argument)</dt>
+    <dd>the name of the model object</dd>
+    <dt>for (required argument)</dt>
+    <dd>full qualified name of a field, i.e. package.Model.field</dd>
+</dl>
+
+p(note). If _arg_ is not provided, then, by convention, the name of the model object will be the model name converted to underscore_case
+
+p(note). Provide _arg_ if the name of model object being passed to a template doesn't follow the underscore_case convention.
+
+Tag
+
+bc. #{formee.password for:'package.Model.field' /}
+
+Produces
+
+bc. <input type="password" data-validate="{...}" class id="model_field" name="model.field" value/>
+
+h3. formee.hidden (HTML4)
+
+The *formee.hidden* tag generates an input element of type _hidden_
+
+Params:
+<dl>
+    <dt>_arg_ (implicit optional argument)</dt>
+    <dd>the name of the model object</dd>
+    <dt>for (required argument)</dt>
+    <dd>full qualified name of a field, i.e. package.Model.field</dd>
+</dl>
+
+p(note). If _arg_ is not provided, then, by convention, the name of the model object will be the model name converted to underscore_case
+
+p(note). Provide _arg_ if the name of model object being passed to a template doesn't follow the underscore_case convention.
+
+Tag
+
+bc. #{formee.hidden for:"package.Model.field" /}
+
+Produces
+
+bc. <input type="hidden" name="model.field" value/>
+
+h3. formee.checkbox (HTML4)
+
+The *formee.checkbox* ...
+
+h3. formee.radio (HTML4)
+
+h3. formee.checkbool (HTML4)
 
 h2. Slow Tags
 
@@ -100,11 +288,6 @@ h3. formee.v_block
 - type
 - col
 - required
-
-h3. formee.hidden
-
-- The required arg: name
-- object
 
 h3. formee.clear
 
@@ -128,11 +311,35 @@ h2. Sample application
 
 One sample demo is part of the distribution. Don’t forget to run play deps so that it resolves dependencies.
 
+h2. TODO
+
+Implement fast tags for HTML5 input types:
+
+* search
+* tel
+* url
+* email
+* datetime
+* date
+* month
+* week
+* time
+* datetime-local
+* number
+* range
+* color
+
+Provide a formee-validate.js min VERSION
+
 h2. Credits
 
-Formee module is based on the following components:
+Author: Omar O. Román
 
-- "Formee framework":http://formee.org/
-- "jqvalidate module":http://www.playframework.org/modules/jqvalidate
-- "jquery.validate plug-in":http://bassistance.de/jquery-plugins/jquery-plugin-validation/
-- "jquery.metadata plug-in":http://plugins.jquery.com/project/metadata
+Formee module is inpired and based on the following components:
+
+- "Formee":http://formee.org/ framework by Bernard De Luna, Daniel Araujo, and Marcello Manso
+- "jqvalidate":http://www.playframework.org/modules/jqvalidate module by Michael Murray
+- "jqvalidation":http://www.playframework.org/modules/jqvalidation module by Ahmed Mahmoud Mohammed Abd El-wahab
+- "html5validate":http://www.playframework.org/modules/html5validation module by Sebastian Hoß
+- "jquery.validate plug-in":http://bassistance.de/jquery-plugins/jquery-plugin-validation/ by Jörn Zaefferer
+- "jquery.metadata plug-in":http://plugins.jquery.com/project/metadata by John Resig, Yehuda Katz, Jörn Zaefferer, Paul McLanahan

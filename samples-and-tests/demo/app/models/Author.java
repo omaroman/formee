@@ -20,7 +20,7 @@ public class Author extends AuthorAbs {
 
     @Required
     @Min(15)
-    public int age;   // Just for testing purposes
+    public Integer age;   // Just for testing purposes
 
     public boolean mastermind;
 }

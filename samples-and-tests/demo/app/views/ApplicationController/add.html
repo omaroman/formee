@@ -13,7 +13,7 @@
 <section id="content" role="container" class="row" >
 
     <!-- BEGIN #maincontent .col_12-->
-#{formee.form @ApplicationController.create(), class:'col col_8 push_4', for:author}
+#{formee.form @ApplicationController.create(), obj:author, class:'col col_8 push_4'}
     <fieldset>
         <legend>Author</legend>
 
@@ -36,14 +36,14 @@
         *{</div>}*
         *{#{formee.clear/}}*
         <div class="field h-block grid-12-12">
-            #{formee.field 'author.first_name', model:'models.Author'}
+            #{formee.field for:'models.Author.first_name'}
                 <div class="grid-3-12">
                     *{<label>Name<em class="formee-req">*</em></label>}*
-                    #{formee.label field.fqn, required:true /}
+                    #{formee.label for:field.for, required:true /}
                 </div>
                 <div class="grid-4-12">
-                    #{formee.text field.fqn /}
-                    #{formee.error field.fqn }#{error field.name /}#{/formee.error}
+                    #{formee.text for:field.for /}
+                    #{formee.error for:field.for }#{error field.name /}#{/formee.error}
                 </div>
             #{/formee.field}
         </div>
@@ -62,13 +62,13 @@
         *{</div>}*
         *{#{formee.clear/}}*
         <div class="field h-block grid-12-12">
-            #{formee.field 'author.last_name', model:'models.Author'}
+            #{formee.field for:'models.Author.last_name'}
                 <div class="grid-3-12">
-                    #{formee.label field.fqn, required:true /}
+                    #{formee.label for:field.for, required:true /}
                 </div>
                 <div class="grid-4-12">
-                    #{formee.text field.fqn /}
-                    #{formee.error field.fqn}#{error field.name /}#{/formee.error}
+                    #{formee.text for:field.for /}
+                    #{formee.error for:field.for}#{error field.name /}#{/formee.error}
                 </div>
             #{/formee.field}
         </div>
@@ -94,18 +94,18 @@
         *{</div>}*
         *{#{formee.clear/}}*
         <div class="field v-block grid-4-12 right">
-            #{formee.field 'author.age', model:'models.Author'}
-                #{formee.label field.fqn, required:true /}
-                #{formee.text field.fqn /}
-                #{formee.error field.fqn}#{error field.name /}#{/formee.error}
+            #{formee.field for:'models.Author.age'}
+                #{formee.label for:field.for, required:true /}
+                #{formee.text for:field.for /}
+                #{formee.error for:field.for}#{error field.name /}#{/formee.error}
             #{/formee.field}
         </div>
         #{formee.clear/}
 
         <div class="field v-block grid-4-12 left">
-            #{formee.field 'author.mastermind', model:'models.Author'}
-                #{formee.label field.fqn /}
-                #{formee.checkbox field.fqn /}
+            #{formee.field for:'models.Author.mastermind'}
+                #{formee.label for:field.for /}
+                #{formee.checkbox for:field.for /}
             #{/formee.field}
         </div>
         #{formee.clear/}

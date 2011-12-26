@@ -7,8 +7,8 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import play.Logger;
 import play.data.validation.*;
 import play.i18n.Messages;
 import play.modules.formee.FormeeValidation;
@@ -32,23 +32,24 @@ public class FormeeTags extends FastTags {
      */
     @SuppressWarnings("unchecked")
     public static void _form(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
+        if (args.get("obj") == null) {
+            throw new IllegalArgumentException("There's no 'obj' argument");
+        }
+
         if (args.containsKey("class")) {
             ((Map<Object, Object>) args).put("class", args.remove("class") + " formee");
         } else {
             ((Map<Object, Object>) args).put("class", "formee");
         }
-        if (args.get("for") != null) {
-            BaseTemplate.layoutData.get().put("_editObject_", args.remove("for"));
-        }
+
+        // Store object into BaseTemplate.layoutData Map, in order to be available from BaseTemplate
+        BaseTemplate.layoutData.get().put("_editObject_", args.remove("obj"));
 
         FastTags._form(args, body, out, template, fromLine);
     }
 
     @SuppressWarnings("unchecked")
     public static void _input(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) throws Exception {
-        Map.Entry<String, String> modelField = getModelField(args);
-        String dataValidation = getDataValidation(modelField);
-
         String type = (String) args.remove("type");
         if (type == null) {
             throw new IllegalArgumentException("There's no 'type' argument");
@@ -85,22 +86,17 @@ public class FormeeTags extends FastTags {
      * @param fromLine template line number where the tag is defined
      */
     public static void _field(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
-        Map<String,Object> fieldMap = new HashMap<String,Object>();
-        String _arg = args.get("arg").toString();
-
         Map.Entry<String, String> modelField = getModelField(args);
+        String arg = args.get("arg") != null ? args.get("arg").toString() : null;
+        String var = getConventionName(arg, modelField);
 
-        if (args.get("model") != null) {
-            String field = StringUtils.split(_arg, '.')[1];  // TODO: Enhance this in case nested models
-            String model = args.get("model").toString();
-            fieldMap.put("fqn", String.format("%s.%s", model, field));
-        }
-        
-        fieldMap.put("name", _arg);
-        fieldMap.put("id", _arg.replace('.','_'));
-        fieldMap.put("flash", Flash.current().get(_arg));
+        Map<String,Object> fieldMap = new HashMap<String,Object>();
+        fieldMap.put("for", args.get("for"));
+        fieldMap.put("name", var);
+        fieldMap.put("id", var.replace('.', '_'));
+        fieldMap.put("flash", Flash.current().get(var));
         fieldMap.put("flashArray", fieldMap.get("flash") != null && !StringUtils.isEmpty(fieldMap.get("flash").toString()) ? fieldMap.get("flash").toString().split(",") : new String[0]);
-        fieldMap.put("error", Validation.error(_arg));
+        fieldMap.put("error", Validation.error(var));
         fieldMap.put("errorClass", fieldMap.get("error") != null ? "hasError" : "");
 
         try {
@@ -114,12 +110,29 @@ public class FormeeTags extends FastTags {
     }
 
     public static void _label(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
-        // TODO: Check if there's "arg" argument
-        // TODO: Throw illegal argument exception
-        // TODO: Add for attr
+        Map.Entry<String, String> modelField = getModelField(args);
+        String arg = args.get("arg") != null ? args.get("arg").toString() : null;
+        
+        String _msg = args.get("msg") != null ? args.get("msg").toString() : null;
+        String _for = args.get("for") != null ? args.get("for").toString() : null;
+        if (_for == null) {
+            throw new IllegalArgumentException("There's neither 'for' argument");
+        }
+        String msg = _msg != null ? _msg : Messages.get(_for); // if there's 'msg', then use it, otherwise use 'for'
+        if (msg.equals(_for)) {
+            // In case there's no internationalization message for current field
+            String[] tokens = StringUtils.split(msg, '.');
+            msg = tokens[tokens.length - 1];
+        }
+
+        String id = getConventionName(arg, modelField).replace('.', '_');
+        String[] unless = new String[]{"for", "msg"};
+
         StringBuilder html = new StringBuilder();
-        html.append("<label>");
-        html.append(Messages.get(args.get("arg")));
+        html.append("<label for='").append(id).append("' ");    // TODO: Serialize args...
+        html.append(serialize(args, unless));
+        html.append(">");
+        html.append(Messages.get(msg));
         if (args.get("required") != null) {
             if (Boolean.parseBoolean(args.get("required").toString())) {    // TODO: Check if it's castable
                 html.append("<em class='formee-req'>*</em>");
@@ -134,23 +147,22 @@ public class FormeeTags extends FastTags {
      */
     public static void _error(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
         Map.Entry<String, String> modelField = getModelField(args);
+        String arg = args.get("arg") != null ? args.get("arg").toString() : null;
 
-        String _arg = "";
-        if (modelField != null) {
-            _arg = String.format("%s.%s", getSimpleModelName(modelField.getKey()).toLowerCase(), modelField.getValue());
-        }
+        String inputElementId = getConventionName(arg, modelField).replace('.', '_');
 
         String cssClass = "error";
         if (args.containsKey("class")) {
             cssClass = String.format("%s %s", args.get("class"), cssClass);
         }
 
+        String[] unless = new String[]{"class", "for"};  // omit these parameters
         StringBuilder html = new StringBuilder();
         html.append("<span");
-        html.append(" for='").append(_arg.replace('.', '_')).append("'");
         html.append(" class='").append(cssClass).append("'");
-        html.append(" generated='true'");
-        html.append(serialize(args, "class"));
+        html.append(" for='").append(inputElementId).append("'");  // required in order to work with jquery.validate plug-in
+        html.append(" generated='true'");   // required in order to work with jquery.validate plug-in
+        html.append(serialize(args, unless));   // except unless
         html.append(">");
 
         out.println(html.toString());
@@ -243,7 +255,17 @@ public class FormeeTags extends FastTags {
         String dataValidation = getDataValidation(modelField);
 
         String input = "<input type='checkbox' data-validate='%s' class='%s' id='%s' name='%s' value='true' %s/>";
-        boolean checked = Boolean.parseBoolean(getDefaultValue(modelField).toString());
+        boolean checked;
+        try {
+            checked = Boolean.parseBoolean(getDefaultValue(modelField).toString()); // boolean primitive
+        } catch (NullPointerException e1) {
+            try {
+                checked = (Boolean) getDefaultValue(modelField); // Boolean Wrapper
+            } catch (NullPointerException e2) {
+                // Finally, if checked is not primitive and wrapper is not initialized
+                checked = false;
+            }
+        }
         if (checked) {
             ((Map<Object, Object>) args).put("checked", "checked");
         }
@@ -340,34 +362,35 @@ public class FormeeTags extends FastTags {
      * @throws Exception -
      */
     static String formatHtmlElementAttributes(Map<?, ?> args, InputType inputType, String htmlElement, Map.Entry<String, String> modelField, String dataValidation) throws Exception {
-        args.remove("for");
+        String arg = args.get("arg") != null ? args.get("arg").toString() : null;
+        
         Object id = args.remove("id");
         Object _class = args.remove("class");
         Object name = args.remove("name");
-        Object value = null;
-        if (modelField != null) {
-            value = getDefaultValue(modelField);
-        }
+        Object value = getDefaultValue(modelField);
+
         if (value == null) {
             value = "";
         }
 
         if (id == null && modelField != null) {
-            id = String.format("%s_%s", getSimpleModelName(modelField.getKey()).toLowerCase(), modelField.getValue());
+            id = getConventionName(arg, modelField).replace('.', '_');
         }
 
         if (name == null && modelField != null) {
-            name = String.format("%s.%s", getSimpleModelName(modelField.getKey()).toLowerCase(), modelField.getValue());
+            name = getConventionName(arg, modelField);
         }
 
         if (_class == null) {
-            _class = (modelField == null ? "nullField" : modelField.getValue());
+//            _class = (modelField == null ? "nullField" : modelField.getValue());
+            _class = "";
         }
 
+        String[] unless = new String[]{"for"};  // omit these parameters
         switch (inputType) {
             case CHECKBOOL:
                 // Without value
-                return String.format(htmlElement, dataValidation, _class, id, name, serialize(args));
+                return String.format(htmlElement, dataValidation, _class, id, name, serialize(args, unless));   // except unless
             case CONCEAL:
                 // Just name
                 return String.format(htmlElement, name);
@@ -375,7 +398,7 @@ public class FormeeTags extends FastTags {
                 // Just name & value
                 return String.format(htmlElement, name, value);
             default:
-                return String.format(htmlElement, dataValidation, _class, id, name, value, serialize(args));
+                return String.format(htmlElement, dataValidation, _class, id, name, value, serialize(args, unless));    // except unless
         }
     }
 
@@ -392,14 +415,24 @@ public class FormeeTags extends FastTags {
      * @throws IllegalArgumentException if the field argument doesn't contain the model name or the field name
      */
     static Map.Entry<String, String> getModelField(Map<?,?> args) {
-        Object name = args.get("arg");
-        if (name == null) {
-            throw new IllegalArgumentException("There's no 'type' argument");
+        String _for = args.get("for") != null ? args.get("for").toString() : null;
+        if (_for == null) {
+            throw new IllegalArgumentException("There's no 'for' argument");
         }
 
-        List<String> tokens = new ArrayList<String>(Arrays.asList(StringUtils.split(name.toString(), '.')));
-        String field = tokens.remove(tokens.size() - 1);
+        String[] tokens = StringUtils.split(_for, '.');
+        if (tokens.length < 3) {
+            throw new IllegalArgumentException("'for' argument is not of the form: package.Model.field");
+        }
+
+
+        String field = tokens[tokens.length - 1];   // field name is supposed to start with lowercase
+        tokens = (String[]) ArrayUtils.remove(tokens, tokens.length - 1);   // remove the last element
         String model = StringUtils.join(tokens, '.');
+
+//        play.Logger.debug("MODEL: %s", model);
+//        play.Logger.debug("FIELD: %s", field);
+
         return new AbstractMap.SimpleEntry<String, String>(model, field);
     }
 
@@ -464,16 +497,22 @@ public class FormeeTags extends FastTags {
 
         return dataValidation;
     }
-    
-    private static String getSimpleModelName(String model) {
-        if (!StringUtils.contains(model, '.')) {
-            return model;
+
+    private static String getConventionName(String arg, Map.Entry<String, String> modelField) {
+//        String var = args.get("arg") != null ? args.get("arg").toString() : null;
+        if (arg == null) {
+            // From model get last token
+            String canonicalModel = modelField.getKey();
+            String[] tokens = StringUtils.split(canonicalModel, '.');
+            String simpleModel = tokens[tokens.length - 1];
+            
+            // TODO: Convert to something case (underscore_case, camelCase, lowercase, UPPERCASE, no-case)
+            //JavaExtensions.
+            arg = simpleModel.toLowerCase();
+            return String.format("%s.%s", arg, modelField.getValue());
+        } else {
+            return String.format("%s.%s", arg, modelField.getValue());
         }
-
-        String[] tokens = StringUtils.split(model, '.');
-        String simpleModelName = tokens[tokens.length - 1];
-
-        return simpleModelName;
     }
 
     public static void printTheList(List<?> items, Class<?> objClass, String titleField, String valueField, String htmlElement, PrintWriter out, Map<?, ?> args, Object validation) throws Exception {

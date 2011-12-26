@@ -1,15 +1,15 @@
-*{Args: arg, model, type, label_col, input_col, [required]}*
+*{Args: arg, for, type, label_col, input_col, [required]}*
 
 %{String classAttr = "field h-block grid-12-12 formee-equal " + (_class ?: "") }%
 
 <div class="${classAttr}">
-    #{formee.field _arg, model:_model} *{author.first_name -> _arg, models.Author -> model}*
+    #{formee.field _arg, for:_for} *{field_name -> _arg, models.Author.field_name -> for}*
         <div class="grid-${_label_col}-12">
-            #{formee.label field.fqn, required:_required /}
+            #{formee.label _label, for:field.for, required:_required /}
         </div>
         <div class="grid-${_input_col}-12">
-            #{formee.input field.fqn, type:_type, class:field.errorClass /}
-            #{formee.error field.fqn}#{error field.name /}#{/formee.error}
+            #{formee.input for:field.for, type:_type, class:field.errorClass /}
+            #{formee.error for:field.for}#{error field.name /}#{/formee.error}
         </div>
     #{/formee.field}
 </div>

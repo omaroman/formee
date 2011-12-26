@@ -13,7 +13,7 @@
 <section id="content" role="container" class="row" >
 
     <!-- BEGIN #maincontent .col_12-->
-    #{formee.form @ApplicationController.create_h(), class:'col col_8 push_4'}
+    #{formee.form @ApplicationController.create_h(), obj:author, class:'col col_8 push_4'}
         <fieldset>
             <legend>Author</legend>
 
@@ -23,10 +23,10 @@
                 </div>
             #{/ifErrors}
 
-            #{formee.h_block 'author.first_name', model:"models.Author", for:author, type:'text', label_col:3, input_col:4, required:true /}
-            #{formee.h_block 'author.last_name', model:"models.Author", for:author, type:'text', label_col:3, input_col:4, required:true /}
-            #{formee.h_block 'author.age', model:"models.Author", for:author, type:'text', label_col:3, input_col:4, required:true /}
-            #{formee.h_block 'author.mastermind', model:"models.Author", for:author, type:'checkbool', label_col:3, input_col:4 /}
+            #{formee.h_block for:"models.Author.first_name", type:'text', label_col:3, input_col:4, required:true /}
+            #{formee.h_block for:"models.Author.last_name", type:'text', label_col:3, input_col:4, required:true /}
+            #{formee.h_block for:"models.Author.age", type:'text', label_col:3, input_col:4, required:true /}
+            #{formee.h_block for:"models.Author.mastermind", type:'checkbool', label_col:3, input_col:4 /}
 
             <div class="grid-12-12">
                 <input class="right" type="submit" title="Add">

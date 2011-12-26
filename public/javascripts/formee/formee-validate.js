@@ -2,7 +2,7 @@
  * =====================================================================================================================
  * formee-validate JavaScript component based on play-jqvalidate
  *
- * This file contains the jQuery validation plug-in 1.9, which is a copyright of JÃ¶rn Zaefferer. Dual licensed under the MIT and GPL licenses.
+ * This file contains the jQuery validation plug-in 1.9, which is a copyright of Jörn Zaefferer. Dual licensed under the MIT and GPL licenses.
  * =====================================================================================================================
  */
 

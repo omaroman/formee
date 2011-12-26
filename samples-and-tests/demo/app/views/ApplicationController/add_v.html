@@ -13,14 +13,14 @@
 <section id="content" role="container" class="row" >
 
     <!-- BEGIN #maincontent .col_12-->
-    #{formee.form @ApplicationController.create_v(), class:'col col_8 push_4 formee'}
+    #{formee.form @ApplicationController.create_v(), obj:author, class:'col col_8 push_4 formee'}
         <fieldset>
             <legend>Author</legend>
 
-            #{formee.v_block 'author.first_name', model:'models.Author', for:author, type:'text', col:4, required:true /}
-            #{formee.v_block 'author.last_name', model:'models.Author', for:author, type:'text', col:4, required:true /}
-            #{formee.v_block 'author.age', model:'models.Author', for:author, col:4, type:'text', required:true /}
-            #{formee.v_block 'author.mastermind', model:"models.Author", for:author, type:'checkbool', col:4 /}
+            #{formee.v_block for:'models.Author.first_name', obj:author, type:'text', col:4, required:true /}
+            #{formee.v_block for:'models.Author.last_name', obj:author, type:'text', col:4, required:true /}
+            #{formee.v_block for:'models.Author.age', obj:author, col:4, type:'text', required:true /}
+            #{formee.v_block for:"models.Author.mastermind", obj:author, type:'checkbool', col:4 /}
 
             <div class="grid-12-12">
                 <input class="right" type="submit" title="Add">

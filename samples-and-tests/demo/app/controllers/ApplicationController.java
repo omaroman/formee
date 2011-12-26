@@ -16,7 +16,8 @@ public class ApplicationController extends Controller {
     }
 
     public static void add_h() {
-        render();
+        Author author = new Author();   // Create an empty obj.
+        render(author);
     }
     
     public static void create_h(@Valid Author author) {
@@ -29,7 +30,8 @@ public class ApplicationController extends Controller {
     }
 
     public static void add_v() {
-        render();
+        Author author = new Author();   // Create an empty obj.
+        render(author);
     }
 
     public static void create_v(@Valid Author author) {
@@ -42,7 +44,8 @@ public class ApplicationController extends Controller {
     }
 
     public static void add() {
-        render();
+        Author author = new Author();   // Create an empty obj.
+        render(author);
     }
 
     public static void create(@Valid Author author) {
