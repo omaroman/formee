@@ -6,6 +6,7 @@
 
 package jobs;
 
+import models.Author;
 import play.Logger;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
@@ -18,7 +19,7 @@ public class Bootstrap extends Job {
     public void doJob() {
 
 //        Fixtures.deleteAllModels();
-        if (models.Author.count() == 0) {
+        if (Author.count() == 0) {
             Fixtures.loadModels("initial-data.yml");
             Logger.info("Loaded initial data");
         }

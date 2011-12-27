@@ -110,4 +110,20 @@ public class Formee {
         result.append("}");
         return result.toString();
     }
+    
+    public static void printValidationData() {
+        Map<String, Map<String, String>> validations = FormeeValidation.getInstance().getModelFieldValidation();
+
+        StringBuilder out = new StringBuilder("\n");
+        for (String model : validations.keySet()) {
+            for (String field : validations.get(model).keySet()) {
+                String dataValidation = validations.get(model).get(field);
+                out.append("[").append(model).append("]").append("\n");
+                out.append("    ").append(field).append(" -> ").append(dataValidation).append("\n");
+            }
+        }
+        out.append("\n");
+
+        play.Logger.debug(out.toString());
+    }
 }

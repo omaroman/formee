@@ -11,6 +11,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import play.data.validation.*;
 import play.i18n.Messages;
+import play.modules.formee.Formee;
+import play.modules.formee.FormeeProps;
 import play.modules.formee.FormeeValidation;
 import play.modules.formee.InputType;
 import play.mvc.Scope.Flash;
@@ -129,12 +131,12 @@ public class FormeeTags extends FastTags {
         String[] unless = new String[]{"for", "msg"};
 
         StringBuilder html = new StringBuilder();
-        html.append("<label for='").append(id).append("' ");    // TODO: Serialize args...
+        html.append("<label for='").append(id).append("' ");
         html.append(serialize(args, unless));
         html.append(">");
         html.append(Messages.get(msg));
         if (args.get("required") != null) {
-            if (Boolean.parseBoolean(args.get("required").toString())) {    // TODO: Check if it's castable
+            if (Boolean.parseBoolean(args.get("required").toString())) {    // TODO: Check if it's castable -> InvalidArgumentException
                 html.append("<em class='formee-req'>*</em>");
             }
         }
@@ -363,7 +365,7 @@ public class FormeeTags extends FastTags {
      */
     static String formatHtmlElementAttributes(Map<?, ?> args, InputType inputType, String htmlElement, Map.Entry<String, String> modelField, String dataValidation) throws Exception {
         String arg = args.get("arg") != null ? args.get("arg").toString() : null;
-        
+
         Object id = args.remove("id");
         Object _class = args.remove("class");
         Object name = args.remove("name");
@@ -493,23 +495,35 @@ public class FormeeTags extends FastTags {
         // Get dataValidation from FormeeValidation -> Map<Model, Map<Field, DataValidation>>
         Map<String, Map<String,String>> classFieldValidation = FormeeValidation.getInstance().getModelFieldValidation();
         Map<String, String> fieldValidation = classFieldValidation.get(model);
-        String dataValidation = fieldValidation.get(field);
-
-        return dataValidation;
+        try {
+            return fieldValidation.get(field); // get Data Validation
+        } catch (NullPointerException e) {
+            String error = String.format("for:'%s.%s' -> full qualified name of field doesn't exist", model, field);
+            throw new IllegalArgumentException(error);
+        }
     }
 
     private static String getConventionName(String arg, Map.Entry<String, String> modelField) {
-//        String var = args.get("arg") != null ? args.get("arg").toString() : null;
         if (arg == null) {
             // From model get last token
             String canonicalModel = modelField.getKey();
             String[] tokens = StringUtils.split(canonicalModel, '.');
             String simpleModel = tokens[tokens.length - 1];
+
+            // Naming Case...
+            String simpleModelName = null;
+            if (FormeeProps.getNamingCase().equals(FormeeProps.CAMEL_CASE)) {
+                simpleModelName = toCamelCase(simpleModel);
+            } else if (FormeeProps.getNamingCase().equals(FormeeProps.UNDERSCORE_CASE)) {
+                simpleModelName = to_underscore_case(simpleModel);
+            } else if (FormeeProps.getNamingCase().equals(FormeeProps.PROPER_CASE)) {
+                simpleModelName = ToProperCase(simpleModel);
+            } else {
+                // This line shall never be reached
+                assert false : "This line shall never be reached";
+            }
             
-            // TODO: Convert to something case (underscore_case, camelCase, lowercase, UPPERCASE, no-case)
-            //JavaExtensions.
-            arg = simpleModel.toLowerCase();
-            return String.format("%s.%s", arg, modelField.getValue());
+            return String.format("%s.%s", simpleModelName.toString(), modelField.getValue());
         } else {
             return String.format("%s.%s", arg, modelField.getValue());
         }
@@ -588,5 +602,40 @@ public class FormeeTags extends FastTags {
             minCheckbox = minCheckbox.toString() + group + (isRequired ? "required" : "");
         }
         return minCheckbox + maxCheckbox.toString();
+    }
+
+    private static String to_underscore_case(String name) {
+        String[] tokens = StringUtils.splitByCharacterTypeCamelCase(name);
+        StringBuilder simpleName = new StringBuilder();
+        for (int i = 0; i<tokens.length; i++) {
+            if (!tokens[i].equals("_")) {
+                simpleName.append(tokens[i].toLowerCase());
+            } else {
+                continue;
+            }
+            if(i < tokens.length - 1) {
+                simpleName.append('_');
+            }
+        }
+
+        return simpleName.toString();
+    }
+    
+    static String toCamelCase(String name){
+        String[] tokens = StringUtils.splitByCharacterTypeCamelCase(name);
+        StringBuilder simpleName = new StringBuilder();
+        for (int i = 0; i<tokens.length; i++) {
+            if (i == 0) {
+                simpleName.append(tokens[i].toLowerCase());
+                continue;
+            }
+            simpleName.append(JavaExtensions.capFirst(tokens[i]));
+        }
+
+        return simpleName.toString();
+    }
+
+    static String ToProperCase(String name) {
+        return JavaExtensions.camelCase(name);
     }
 }

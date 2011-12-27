@@ -18,6 +18,7 @@ import play.Logger;
 import play.Play;
 import play.PlayPlugin;
 import play.db.jpa.GenericModel;
+import play.exceptions.ConfigurationException;
 
 /**
  * PLAY! Plugin to do some logic on startup
@@ -25,6 +26,20 @@ import play.db.jpa.GenericModel;
 public class FormeePlugin extends PlayPlugin {
 
     private FormeeValidation formeeValidation = FormeeValidation.getInstance();
+
+    @Override
+    public void onConfigurationRead() {
+        String namingCase = Play.configuration.getProperty(FormeeProps.CONFIG_PREFIX + "namingCase", FormeeProps.DEFAULT_NAMING_CASE);
+        if (!namingCase.equals(FormeeProps.CAMEL_CASE)) {
+            if (!namingCase.equals(FormeeProps.UNDERSCORE_CASE)) {
+                if (!namingCase.equals(FormeeProps.PROPER_CASE)) {
+                    String error = "===== formee.namingCase property is not configured correctly. Check your application.conf =====";
+                    throw new ConfigurationException(error);
+                }
+            }
+        }
+        FormeeProps.namingCase = namingCase;
+    }
 
     /**
      * Called at application start (and at each reloading) Time to analyze the

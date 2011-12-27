@@ -5,11 +5,11 @@
 <div class="${classAttr}">
     #{formee.field _arg, for:_for} *{field_name -> _arg, models.Author.field_name -> for}*
         <div class="grid-${_label_col}-12">
-            #{formee.label _label, for:field.for, required:_required /}
+            #{formee.label msg:_label, for:field.for, required:_required /}
         </div>
         <div class="grid-${_input_col}-12">
-            #{formee.input for:field.for, type:_type, class:field.errorClass /}
-            #{formee.error for:field.for}#{error field.name /}#{/formee.error}
+            #{formee.input _arg, for:field.for, type:_type, class:field.errorClass /}
+            #{formee.error _arg, for:field.for}#{error field.name /}#{/formee.error}
         </div>
     #{/formee.field}
 </div>

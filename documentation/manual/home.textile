@@ -11,9 +11,7 @@ h2. Features
 h2. Getting started
 
 - Add this module to your dependecy.yml file
-- This module depends on jQuery library.
-
-p(note). @Unique ---> default message is missing
+- This module depends on jQuery library, but play! comes with it, just ensure you don't delete it.
 
 h2. Usage
 
@@ -27,6 +25,33 @@ Include the following files in your views containing forms:
 # formee/formee.js
 
 p(note). The _formee-validate.js_ script contains copies of the [jQuery Validation Plugin] and the [jQuery Metadata Plugin]
+
+h3. Configure
+
+The only configuration needed is for the _convention naming case_ of object models (variables) passing through Controllers to Templates and vice versa.
+
+bc. formee.namingCase
+
+There are two options:
+
+* camelCase
+* underscore_case
+
+In case this property is not provided, then by default the naming case will be _camelCase_
+
+h3. Internationalisation Messages
+
+The Internationalisation structure is as follows:
+
+bc. package.Model.field
+
+E.g.,
+
+bc. models.Author.age=Age
+
+p(note). # Validation messages for @Unique is missing in Play!, so you have to include it on you own messages file.
+E.g.,
+validation.unique=Already exists
 
 h2. Fast Tags
 
@@ -49,12 +74,31 @@ Params:
     In most cases you will not need to use this attribute at all. The default value (i.e. if you don't use this attribute at all) is "application/x-www-form-urlencoded", which is sufficient for almost any kind of form data. The one exception is if you want to do file uploads. In that case you should use "multipart/form-data"</dd>
 </dl>
 
-p(note). _In adding mode_, from Controller send an instantiated object:
+p(note). Either for _adding/creating_ or _editing/updating_, *formee.tag* requires and object model.
+
 E.g.,
-public static void add() {
-    Model model = new Model();
-    render(model);
+
+<pre><code>
+public MyController extends Controller {
+    public static void add() {
+        Model model = new Model();
+        render(model);
+    }
+    public static void edit(Long id) {
+        MyModel model = MyModel.findById(id);
+        if (model == null) {
+            notFound();
+        } else {
+            render(model);
+        }
+    }
 }
+</code></pre>
+
+p(note). In case of editing, don't forget to put the model *id* into a hidden element.
+#{formee.hidden for:"package.Model.id" /}
+
+Tag
 
 bc. #{formee.form @Controller.action(), obj:model}
     ...
@@ -81,9 +125,9 @@ Params:
     <dd>full qualified name of a field, i.e. package.Model.field</dd>
 </dl>
 
-p(note). If _arg_ is not provided, then, by convention, the name of the model object will be the model name converted to underscore_case
+p(note). See "notes":#notes.
 
-p(note). Provide _arg_ if the name of model object being passed to a template doesn't follow the underscore_case convention.
+Tag
 
 bc. #{formee.field for:'package.Model.field'}
     <label>&{field.name}</label>
@@ -113,9 +157,7 @@ Params:
     <dd>a boolean value for indicating, visually, if it's required</dd>
 </dl>
 
-p(note). If _msg_ is not provided, then by convention from _for_ tries to get an internationalized message, it there's no such message, then writes the last token of _for_, i.e., from package.Model.field gets just field
-
-p(note). If neither _msg_ nor _for_ are provided, then an exception is thrown.
+p(note). See "notes":#notes.
 
 bc. #{formee.label for:'package.Model.field', required:true /}
 
@@ -126,7 +168,7 @@ bc. <label>First name<em class='formee-req'>*</em></label>
 h3. formee.error (HTML4)
 
 The *formee.error* tag is very similar to the built-in Play error tag except it wraps the error message into a span element and outputs some JavaScript that prepares the element to be used by the jQuery validation plugin.
-It's highly suggested to use it in conjunction with built-in Play _error_ tag.
+It's highly recommended to use it in conjunction with built-in Play _error_ tag.
 
 Params:
 <dl>
@@ -142,7 +184,7 @@ bc. <span for='input_element_id' class='error' generated='true'>...</span>
 
 h3. formee.input (HTML4)
 
-The *formee.input* tag generates any input type: *text, textarea, password, hidden, checkbox, radio, checkbool*.
+The *formee.input* tag generates any input type: *text, textarea, password, hidden, checkbox, radio, _checkbool_*.
 
 Params:
 <dl>
@@ -151,12 +193,10 @@ Params:
     <dt>for (required argument)</dt>
     <dd>full qualified name of a field, i.e. package.Model.field</dd>
     <dt>type</dt>
-    <dd>the input type</dd>
+    <dd>the input type, if this is not valid, then 'text' is used</dd>
 </dl>
 
-p(note). If _arg_ is not provided, then, by convention, the name of the model object will be the model name converted to underscore_case
-
-p(note). Provide _arg_ if the name of model object being passed to a template doesn't follow the underscore_case convention.
+p(note). See "notes":#notes.
 
 Tag
 
@@ -178,9 +218,7 @@ Params:
     <dd>full qualified name of a field, i.e. package.Model.field</dd>
 </dl>
 
-p(note). If _arg_ is not provided, then, by convention, the name of the model object will be the model name converted to underscore_case
-
-p(note). Provide _arg_ if the name of model object being passed to a template doesn't follow the underscore_case convention.
+p(note). See "notes":#notes.
 
 Tag
 
@@ -202,9 +240,7 @@ Params:
     <dd>full qualified name of a field, i.e. package.Model.field</dd>
 </dl>
 
-p(note). If _arg_ is not provided, then, by convention, the name of the model object will be the model name converted to underscore_case
-
-p(note). Provide _arg_ if the name of model object being passed to a template doesn't follow the underscore_case convention.
+p(note). See "notes":#notes.
 
 Tag
 
@@ -226,9 +262,7 @@ Params:
     <dd>full qualified name of a field, i.e. package.Model.field</dd>
 </dl>
 
-p(note). If _arg_ is not provided, then, by convention, the name of the model object will be the model name converted to underscore_case
-
-p(note). Provide _arg_ if the name of model object being passed to a template doesn't follow the underscore_case convention.
+p(note). See "notes":#notes.
 
 Tag
 
@@ -250,9 +284,7 @@ Params:
     <dd>full qualified name of a field, i.e. package.Model.field</dd>
 </dl>
 
-p(note). If _arg_ is not provided, then, by convention, the name of the model object will be the model name converted to underscore_case
-
-p(note). Provide _arg_ if the name of model object being passed to a template doesn't follow the underscore_case convention.
+p(note). See "notes":#notes.
 
 Tag
 
@@ -262,13 +294,36 @@ Produces
 
 bc. <input type="hidden" name="model.field" value/>
 
-h3. formee.checkbox (HTML4)
-
-The *formee.checkbox* ...
-
-h3. formee.radio (HTML4)
-
 h3. formee.checkbool (HTML4)
+
+The *formee.checkbool* tag is useful for representing a boolean values as a checkbox.
+
+Params:
+<dl>
+    <dt>_arg_ (implicit optional argument)</dt>
+    <dd>the name of the model object</dd>
+    <dt>for (required argument)</dt>
+    <dd>full qualified name of a field, i.e. package.Model.field</dd>
+</dl>
+
+p(note). See "notes":#notes.
+
+Tag
+
+bc. #{formee.checkbool for:"package.Model.field" /}
+
+Produces
+
+bc. <input type='checkbox' data-validate='{}' class='' id='model_field' name='author.mastermind' value='true' />
+<input type='hidden' name='author.mastermind' value='false'/>
+
+h3. <a name="notes"></a>*Notes*
+
+p(note). If _for_ is not provided, an exception is thrown.
+
+p(note). If _arg_ is not provided, then, by convention, the name of the model object will be the model name converted to underscore_case
+
+p(note). Provide _arg_ if the name of model object being passed to a template doesn't follow the underscore_case convention.
 
 h2. Slow Tags
 
@@ -312,6 +367,12 @@ h2. Sample application
 One sample demo is part of the distribution. Don’t forget to run play deps so that it resolves dependencies.
 
 h2. TODO
+
+Implement fast tags for HTML4 input types:
+
+* radioList
+* checkboxList
+* selectList
 
 Implement fast tags for HTML5 input types:
 
