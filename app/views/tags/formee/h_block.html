@@ -1,6 +1,6 @@
 *{Args: arg, for, type, label_col, input_col, [required]}*
 
-%{String classAttr = "field h-block grid-12-12 formee-equal " + (_class ?: "") }%
+%{String classAttr = "field h-block grid-12-12 " + (_class ?: "") }%
 
 <div class="${classAttr}">
     #{formee.field _arg, for:_for} *{field_name -> _arg, models.Author.field_name -> for}*
@@ -13,4 +13,3 @@
         </div>
     #{/formee.field}
 </div>
-<div class="clear"></div>

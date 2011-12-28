@@ -5,8 +5,11 @@ h1. Formee
 h2. Features
 
 - It has all the features of _formee_
+- A _form_ wraps an single model
 - Automate validations from client-side based on Play model annotations by using _jquery.validate_ plugin.
 - Homogeneous error messages from both client-side and server-side, i.e., they appear in the same place.
+
+p(note). This play! module it's designed to work with model objects, don't expect correct behavior if used objects that are not extends from Model.
 
 h2. Getting started
 
@@ -22,13 +25,16 @@ Include the following files in your views containing forms:
 # formee/formee-structure-ext.css
 # formee/formee-style.css
 - javascripts:
-# formee/formee.js
+# formee/formee-validate.js
+# formee/formee-equal-height.js
 
 p(note). The _formee-validate.js_ script contains copies of the [jQuery Validation Plugin] and the [jQuery Metadata Plugin]
 
+p(note). The _forme-equal-height.js_ scripts makes all input elements, within _form_ which _class_ equals "formee", have the same height.
+
 h3. Configure
 
-The only configuration needed is for the _convention naming case_ of object models (variables) passing through Controllers to Templates and vice versa.
+Configuration for the _convention naming case_ of object models (variables) passing through Controllers to Templates and vice versa.
 
 bc. formee.namingCase
 
@@ -61,11 +67,15 @@ h3. formee.form (HTML4)
 
 The *formee.form* tag is identical to the built-in Play form tag except it outputs some JavaScript that prepares the form to be validated by the jQuery validation plugin.
 
+p(note). Keep in mind this tag only wraps a single model object, in other words, doesn't manage multiple model objects nor simple unencapsulated values.
+At any rate, you could use class composition and @Transient annotation.
+So don't say I didn't warn you!!!
+
 Params:
 <dl>
     <dt>_arg_ (the implicit required argument)</dt>
     <dd>the action to be invoked after submitting</dd>
-    <dt>obj</dt>
+    <dt>obj (required)</dt>
     <dd>the model object from which the form will get the values either for editing or adding (after error submitting, so that the user doesn't have to fill every correct value again)</dd>
     <dt>method (optional)</dt>
     <dd>if not specified POST by default</dd>
@@ -104,7 +114,7 @@ bc. #{formee.form @Controller.action(), obj:model}
     ...
 #{/formee.form}
 
-Produces
+Html
 
 bc. <form action="/route/to/action" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded" class="formee" >
     <input type="hidden" name="authenticityToken" value="...">
@@ -135,7 +145,7 @@ bc. #{formee.field for:'package.Model.field'}
     <span class="error">${field.error}</span>
 #{/formee.field}
 
-Produces
+Html
 
 bc. <label>...</label>
 <input type="text" data-validate={...} id="model_object_field_name" name="model_object.field_name" value="..." class="..."/>
@@ -159,9 +169,11 @@ Params:
 
 p(note). See "notes":#notes.
 
+Tag
+
 bc. #{formee.label for:'package.Model.field', required:true /}
 
-Produces
+Html
 
 bc. <label>First name<em class='formee-req'>*</em></label>
 
@@ -176,9 +188,11 @@ Params:
     <dd>full qualified name of a field, i.e. package.Model.field</dd>
 </dl>
 
+Tag
+
 bc. #{formee.error for:'package.Model.field' }#{error 'object.field' /}#{/formee.error}
 
-Produces
+Html
 
 bc. <span for='input_element_id' class='error' generated='true'>...</span>
 
@@ -202,7 +216,7 @@ Tag
 
 bc. #{formee.input for:'package.Model.field', type:'text' /}
 
-Produces
+Html
 
 bc. <input type="text" data-validate="{...}" class id="model_field" name="model.field" value/>
 
@@ -224,7 +238,7 @@ Tag
 
 bc. #{formee.text for:'package.Model.field' /}
 
-Produces
+Html
 
 bc. <input type="text" data-validate="{...}" class id="model_field" name="model.field" value/>
 
@@ -246,7 +260,7 @@ Tag
 
 bc. #{formee.textarea for:'package.Model.field' /}
 
-Produces
+Html
 
 bc. <textarea data-validate="{...}" class id="model_field" name="model.field">...</textarea>
 
@@ -268,7 +282,7 @@ Tag
 
 bc. #{formee.password for:'package.Model.field' /}
 
-Produces
+Html
 
 bc. <input type="password" data-validate="{...}" class id="model_field" name="model.field" value/>
 
@@ -290,7 +304,7 @@ Tag
 
 bc. #{formee.hidden for:"package.Model.field" /}
 
-Produces
+Html
 
 bc. <input type="hidden" name="model.field" value/>
 
@@ -312,7 +326,7 @@ Tag
 
 bc. #{formee.checkbool for:"package.Model.field" /}
 
-Produces
+Html
 
 bc. <input type='checkbox' data-validate='{}' class='' id='model_field' name='author.mastermind' value='true' />
 <input type='hidden' name='author.mastermind' value='false'/>
@@ -329,24 +343,96 @@ h2. Slow Tags
 
 h3. formee.h_block
 
-- The required arg: name
-- object
-- type
-- label_col
-- input_col
-- required
+The *formee.h_block* tag generates _label_, an _input_ and a _span_ (for error messages) aligned horizontally and wrapped by a _div_ element.
+
+Params:
+<dl>
+    <dt>_arg_ (implicit optional argument)</dt>
+    <dd>the name of the model object</dd>
+    <dt>for (required argument)</dt>
+    <dd>full qualified name of a field, i.e. package.Model.field</dd>
+    <dt>type</dt>
+    <dd>the input type, if this is not valid, then 'text' is used</dd>
+    <dt>label_col (required)</dt>
+    <dd>the number of columns for placing the label. _*See formee framework specification*_</dd>
+    <dt>input_col (required)</dt>
+    <dd>the number of columns for placing the input. _*See "formee framework":http://formee.org/ specification*_</dd>
+    <dt>required (optional)</dt>
+    <dd>for a visual indicator when a field is required</dd>
+</dl>
+
+Tag
+
+bc. #{formee.h_block for:"package.Model.field", type:'text', label_col:3, input_col:4, required:true /}
+
+Html
+
+bc. <div class="field h-block grid-12-12 ">
+    <div class="grid-3-12">
+        <label for='model_fiel' required="true" >Field name<em class='formee-req'>*</em></label>
+    </div>
+    <div class="grid-4-12">
+        <input type='text' data-validate='{...}' class='' id='model_field' name='model.field' value=''  />
+        <span class='error' for='model_field' generated='true'></span>
+    </div>
+</div>
 
 h3. formee.v_block
 
-- The required arg: name
-- object
-- type
-- col
-- required
+The *formee.v_block* tag generates _label_, an _input_ and a _span_ (for error messages) aligned vertically and wrapped by a _div_ element.
+
+Params:
+<dl>
+    <dt>_arg_ (implicit optional argument)</dt>
+    <dd>the name of the model object</dd>
+    <dt>for (required argument)</dt>
+    <dd>full qualified name of a field, i.e. package.Model.field</dd>
+    <dt>type</dt>
+    <dd>the input type, if this is not valid, then 'text' is used</dd>
+    <dt>col (required)</dt>
+    <dd>the number of columns for placing the elements (label, input, span). _*See "formee framework":http://formee.org/ specification*_</dd>
+    <dt>required (optional)</dt>
+    <dd>for a visual indicator when a field is required</dd>
+</dl>
+
+Tag
+
+bc. #{formee.v_block for:'package.Model.field', type:'text', col:4, required:true /}
+
+Html
+
+bc. <div class="field v-block grid-4-12 ">
+     <label for='model_field' required="true" >Field name<em class='formee-req'>*</em></label>
+    <input type='text' data-validate='{...}' class='' id='model_field' name='model.field' value=''  />
+    <span class='error' for='model_field' generated='true'></span>
+</div>
+
 
 h3. formee.clear
 
+The *formee.clear* tag generates a _div_ element for breaking floating elements.
+
+Tag
+
+bc. #{formee.clear/}
+
+Html
+
+bc. <div class="clear"></div>
+
 h3. formee.css
+
+The *formee.css* tag generates three required style elements: _formee-structure.css_, _formee-structure-ext.css_ and _formee.stye.css_
+
+Tag
+
+bc. #{formee.css/}
+
+Html
+
+bc. <link rel="stylesheet" type="text/css" href="/public/stylesheets/formee/formee-structure.css" charset="utf-8" ></link>
+<link rel="stylesheet" type="text/css" href="/public/stylesheets/formee/formee-structure-ext.css" charset="utf-8" ></link>
+<link rel="stylesheet" type="text/css" href="/public/stylesheets/formee/formee-style.css" charset="utf-8" ></link>
 
 h2. Supported Annotations
 
@@ -389,6 +475,9 @@ Implement fast tags for HTML5 input types:
 * number
 * range
 * color
+
+Implement validation via Ajax
+Include validation using jQuery.validationEngine plug-in
 
 Provide a formee-validate.js min VERSION
 

@@ -1,6 +1,6 @@
 *{Args: arg, for, for, type, col, [required]}*
 
-%{String classAttr = "field v-block grid-${_col}-12 formee-equal " + (_class ?: "") }%
+%{String classAttr = "field v-block grid-${_col}-12 " + (_class ?: "") }%
 
 <div class="${classAttr}">
     #{formee.field _arg, for:_for} *{field_name -> _arg, models.Author.field_name -> for}*

@@ -179,7 +179,8 @@ public class FormeeTags extends FastTags {
         Map.Entry<String, String> modelField = getModelField(args);
         String dataValidation = getDataValidation(modelField);
 
-        String passInput = "<input type='password' data-validate='%s' class='%s' id='%s' name='%s' value='%s' %s/>";
+//        String passInput = "<input type='%s' data-validate='%s' class='%s' id='%s' name='%s' value='%s' %s/>";
+        String passInput = "<input type='%s' data-validate='%s' class='%s' id='%s' name='%s' %s/>";
         passInput = formatHtmlElementAttributes(args, InputType.PASSWORD, passInput, modelField, dataValidation);
         out.print(passInput);
     }
@@ -189,7 +190,7 @@ public class FormeeTags extends FastTags {
      */
     public static void _hidden(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) throws Exception {
         Map.Entry<String, String> modelField = getModelField(args);
-        String input = "<input type='hidden' name='%s' value='%s'/>";
+        String input = "<input type='%s' name='%s' value='%s'/>";
         input = formatHtmlElementAttributes(args, InputType.HIDDEN, input, modelField, null);
         out.print(input);
     }
@@ -201,7 +202,7 @@ public class FormeeTags extends FastTags {
         Map.Entry<String, String> modelField = getModelField(args);
         String dataValidation = getDataValidation(modelField);
 
-        String input = "<input type='text' data-validate='%s' class='%s' id='%s' name='%s' value='%s' %s />";
+        String input = "<input type='%s' data-validate='%s' class='%s' id='%s' name='%s' value='%s' %s />";
         input = formatHtmlElementAttributes(args, InputType.TEXT, input, modelField, dataValidation);
         out.print(input);
         if (body != null) {
@@ -234,7 +235,7 @@ public class FormeeTags extends FastTags {
 //        String js = "onchange=\"if($(this).is(':checked')){$(this).attr('checked','true');$(this).val(true)}else{$(this).val(false)};\"";
 //        ((Map<Object, Object>) args).put("js", js);
 
-        String input = "<input type='checkbox' data-validate='%s' class='%s' id='%s' name='%s' value='true' />";
+        String input = "<input type='%s' data-validate='%s' class='%s' id='%s' name='%s' value='true' />";
         boolean checked = Boolean.parseBoolean(getDefaultValue(modelField).toString());
         if (checked) {
             ((Map<Object, Object>) args).put("checked", "checked");
@@ -245,7 +246,8 @@ public class FormeeTags extends FastTags {
     }
 
     public static void _radio(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) throws Exception {
-        // TODO implement radio button element.
+        // There's no sense in implementing a single radio
+        // @See radioList
     }
 
     /**
@@ -256,7 +258,7 @@ public class FormeeTags extends FastTags {
         Map.Entry<String, String> modelField = getModelField(args);
         String dataValidation = getDataValidation(modelField);
 
-        String input = "<input type='checkbox' data-validate='%s' class='%s' id='%s' name='%s' value='true' %s/>";
+        String input = "<input type='%s' data-validate='%s' class='%s' id='%s' name='%s' value='true' %s/>";
         boolean checked;
         try {
             checked = Boolean.parseBoolean(getDefaultValue(modelField).toString()); // boolean primitive
@@ -276,7 +278,7 @@ public class FormeeTags extends FastTags {
         out.print(input);
 
         // Special case: Creates an input of type hidden
-        String hiddenInput = "<input type='hidden' name='%s' value='false'/>";
+        String hiddenInput = "<input type='%s' name='%s' value='false'/>";
         hiddenInput = formatHtmlElementAttributes(args, InputType.CONCEAL, hiddenInput, modelField);
         out.print(hiddenInput);
     }
@@ -289,7 +291,7 @@ public class FormeeTags extends FastTags {
         Map.Entry<String, String> modelField = getModelField(args);
         String dataValidation = getDataValidation(modelField);
 
-        String input = "<input type='file' data-validate='%s' class='%s' id='%s' name='%s' value='%s' %s />";
+        String input = "<input type='%s' data-validate='%s' class='%s' id='%s' name='%s' value='%s' %s />";
 
         Object acceptExtentions = args.remove("accept");// match.
         Object rejectExtentions = args.remove("reject");// match.
@@ -323,7 +325,7 @@ public class FormeeTags extends FastTags {
     }
 
     public static void _checkboxList(Map<?, ?> args, Closure body,PrintWriter out, ExecutableTemplate template, int fromLine) throws Exception {
-        String htmlElement = "<input type=\"checkbox\" class=\"%s %s\" id=\"%s\" name=\"%s\" title=\"%s\" value=\"%s\"/>";
+        String htmlElement = "<input type='checkbox' class='%s' id='%s' name='%s' title='%s' value='%s'/>";
         String valueField = (String) args.remove("value");
         String titleField = (String) args.remove("title");
         List<?> items = (List<?>) args.remove("items");
@@ -335,7 +337,7 @@ public class FormeeTags extends FastTags {
     }
 
     public static void _radioList(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) throws Exception {
-        String radioButton = "<input type=\"radio\" class=\"%s %s\" id=\"%s\" name=\"%s\" title=\"%s\" value=\"%s\"/>";
+        String radioButton = "<input type='radio' class='%s' id='%s' name='%s' title='%s' value='%s'/>";
         String value = (String) args.remove("value");
         String title = (String) args.remove("title");
         List<?> items = (List<?>) args.remove("items");
@@ -347,8 +349,17 @@ public class FormeeTags extends FastTags {
         printTheList(items, items.get(0).getClass(), title, value, radioButton, out, args, validation);
     }
 
-    public static void _select(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
+    public static void _selectList(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
         // TODO implement the select Element.
+//        #{select 'users', items:users, valueProperty:'id', labelProperty:'name', value:5, class:'test', id:'select2' /}
+
+        // PARAMS:
+        // arg -> the full qualified name of a field
+        // a Collection of Objects (not necessarily Models) (required)
+        // valueProperty (required) -> the field from which the value will be gotten
+        // labelProperty (required) -> the field from which the label will be named
+        // value (optional) -> the default value the select will be showing by default
+
     }
 
 
@@ -384,23 +395,28 @@ public class FormeeTags extends FastTags {
         }
 
         if (_class == null) {
-//            _class = (modelField == null ? "nullField" : modelField.getValue());
             _class = "";
         }
 
         String[] unless = new String[]{"for"};  // omit these parameters
+        String _inputType = inputType.toString().toLowerCase();
         switch (inputType) {
+            case PASSWORD:
+                // Without value
+                return String.format(htmlElement, _inputType, dataValidation, _class, id, name, serialize(args, unless));   // except unless
             case CHECKBOOL:
                 // Without value
-                return String.format(htmlElement, dataValidation, _class, id, name, serialize(args, unless));   // except unless
+                _inputType = InputType.CHECKBOX.toString().toLowerCase();
+                return String.format(htmlElement, _inputType, dataValidation, _class, id, name, serialize(args, unless));   // except unless
             case CONCEAL:
                 // Just name
-                return String.format(htmlElement, name);
+                _inputType = InputType.HIDDEN.toString().toLowerCase();
+                return String.format(htmlElement, _inputType, name);
             case HIDDEN:
                 // Just name & value
-                return String.format(htmlElement, name, value);
+                return String.format(htmlElement, _inputType, name, value);
             default:
-                return String.format(htmlElement, dataValidation, _class, id, name, value, serialize(args, unless));    // except unless
+                return String.format(htmlElement, _inputType, dataValidation, _class, id, name, value, serialize(args, unless));    // except unless
         }
     }
 
@@ -522,15 +538,14 @@ public class FormeeTags extends FastTags {
                 // This line shall never be reached
                 assert false : "This line shall never be reached";
             }
-            
-            return String.format("%s.%s", simpleModelName.toString(), modelField.getValue());
+            return String.format("%s.%s", simpleModelName, modelField.getValue());
         } else {
             return String.format("%s.%s", arg, modelField.getValue());
         }
     }
 
     public static void printTheList(List<?> items, Class<?> objClass, String titleField, String valueField, String htmlElement, PrintWriter out, Map<?, ?> args, Object validation) throws Exception {
-        String label = "<label class=\"%sLbl\" for=\"%s\">%s</label>";
+        String label = "<label class='sLbl' for='%s'>%s</label>";
         Object id = args.remove("id");
         Object _class = args.remove("class");
         Object name = args.remove("name");
@@ -554,8 +569,8 @@ public class FormeeTags extends FastTags {
         int i = 1;
         for (Object obj : items) {
             String[] titleValue = new String[2];
-//            titleValue[0] = VTags.getFieldValue(obj, titleField).toString(); // TODO: Fix it
-//            titleValue[1] = VTags.getFieldValue(obj, valueField).toString(); // TODO: Fix it
+            titleValue[0] = getFieldValue(obj, titleField).toString();
+            titleValue[1] = getFieldValue(obj, valueField).toString();
             // class id title
             out.print(String.format(label, _class, id.toString() + i, titleValue[0]) + "&nbsp;");
 

@@ -4,8 +4,8 @@
     #{formee.css/}
 #{/set}
 #{set 'moreScripts'}
-    #{script 'formee/formee.js' /}
     #{script 'formee/formee-validate.js' /}
+    #{script 'formee/formee-equal-height.js' /}
     #{script 'application.js' /}
 #{/set}
 
@@ -17,10 +17,10 @@
         <fieldset>
             <legend>Author</legend>
 
-            #{formee.v_block for:'models.Author.first_name', obj:author, type:'text', col:4, required:true /}
-            #{formee.v_block for:'models.Author.last_name', obj:author, type:'text', col:4, required:true /}
-            #{formee.v_block for:'models.Author.age', obj:author, col:4, type:'text', required:true /}
-            #{formee.v_block for:"models.Author.mastermind", obj:author, type:'checkbool', col:4 /}
+            #{formee.v_block for:'models.Author.first_name', type:'text', col:4, required:true /}
+            #{formee.v_block for:'models.Author.last_name', type:'text', col:4, required:true /}
+            #{formee.v_block for:'models.Author.age', col:4, type:'text', required:true /}
+            #{formee.v_block for:"models.Author.mastermind", type:'checkbool', col:4 /}
 
             <div class="grid-12-12">
                 <input class="right" type="submit" title="Add">
