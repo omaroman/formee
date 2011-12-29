@@ -11,4 +11,4 @@ h2. Features
 
 p(note). This play! module it's designed to work with model objects, don't expect correct behavior if used objects that are not extends from Model.
 
-See "full documentation":/home/manual/home.textile for more information.
+See "full documentation":https://github.com/omaroman/formee/blob/master/documentation/manual/home.textile for more information.
