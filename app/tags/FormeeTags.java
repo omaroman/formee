@@ -67,11 +67,14 @@ public class FormeeTags extends FastTags {
             } else if (type.equals("hidden")) {
                 _hidden(args, body, out, template, fromLine);
             } else if (type.equals("checkbox")) {
-                _checkbox(args, body, out, template, fromLine);
+                //_checkbox(args, body, out, template, fromLine);
+                // TODO: Implement
+                // I guess it doesn't make sense to implement a single radio input
             } else if (type.equals("checkbool")) {
                 _checkbool(args, body, out, template, fromLine);
             } else if (type.equals("radio")) {
                 // TODO: Implement
+                // I guess it doesn't make sense to implement a single radio input
             } else { // default
                 _text(args, body, out, template, fromLine);
             }
@@ -349,17 +352,67 @@ public class FormeeTags extends FastTags {
         printTheList(items, items.get(0).getClass(), title, value, radioButton, out, args, validation);
     }
 
-    public static void _selectList(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) {
-        // TODO implement the select Element.
-//        #{select 'users', items:users, valueProperty:'id', labelProperty:'name', value:5, class:'test', id:'select2' /}
+    public static void _selectList(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) throws Exception {
+        // Built-in slow tag
+        // #{select 'users', items:users, valueProperty:'id', labelProperty:'name', value:5, class:'test', id:'select2' /}
 
         // PARAMS:
-        // arg -> the full qualified name of a field
-        // a Collection of Objects (not necessarily Models) (required)
+        // arg -> (implicit optional argument) – name of the model object.
+        // for -> the full qualified name of a field
+        // items (required) -> a Collection of Objects (not necessarily Models) (required)
         // valueProperty (required) -> the field from which the value will be gotten
         // labelProperty (required) -> the field from which the label will be named
         // value (optional) -> the default value the select will be showing by default
 
+        Map.Entry<String, String> modelField = getModelField(args);
+        List<?> items = args.get("items") != null ? (List<?>) args.get("items") : null;
+        if (items == null) {
+            throw new IllegalArgumentException("There's no 'items' argument");
+        }
+        String valueProperty = args.get("valueProperty") != null ? (String) args.get("valueProperty") : null;
+        if (valueProperty == null) {
+            throw new IllegalArgumentException("There's no 'valueProperty' argument");
+        }
+        String labelProperty = args.get("labelProperty") != null ? (String) args.get("labelProperty") : null;
+        if (labelProperty == null) {
+            throw new IllegalArgumentException("There's no 'labelProperty' argument");
+        }
+        String arg = args.get("arg") != null ? args.get("arg").toString() : null;
+        String name = getConventionName(arg, modelField);
+        String id = name.replace('.', '_');
+        Object value = getDefaultValue(modelField);
+        // TODO: Notify is value is null
+        
+        String[] unless = new String[]{"for", "items", "valueProperty", "labelProperty", "multiple"};  // omit these parameters
+        StringBuilder html = new StringBuilder();
+        html.append("<select");
+        html.append(" id='").append(id).append("'");  // required in order to work with jquery.validate plug-in
+        html.append(" name='").append(name).append("'");   // required for binding
+        html.append(serialize(args, unless));   // except unless
+        html.append(">");
+        out.println(html.toString());
+        if (body != null) {
+            out.println(JavaExtensions.toString(body)); // Prints the html-body-code between #{formee.select} and #{/formee.select}
+        }
+
+        for (Object item : items) {
+            html.setLength(0);  // empty/clear StringBuilder
+            Object val = getFieldValue(item, valueProperty);    // get value via reflection
+            Object label = getFieldValue(item, labelProperty);  // get value via reflection
+//            play.Logger.debug("VALUE: %s", value);
+//            play.Logger.debug("VAL: %s", val);
+            html.append("<option");
+            html.append(" value='").append(val).append("'");
+            if (value != null && value.toString().equals(val.toString())) {
+                html.append(" selected");
+            }
+            html.append(">");
+            html.append(label);
+            html.append("</option>");
+            out.println(html.toString());
+        }
+        
+        out.println("</select>");
     }
 
 
@@ -442,7 +495,6 @@ public class FormeeTags extends FastTags {
         if (tokens.length < 3) {
             throw new IllegalArgumentException("'for' argument is not of the form: package.Model.field");
         }
-
 
         String field = tokens[tokens.length - 1];   // field name is supposed to start with lowercase
         tokens = (String[]) ArrayUtils.remove(tokens, tokens.length - 1);   // remove the last element

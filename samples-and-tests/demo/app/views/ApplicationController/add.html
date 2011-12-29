@@ -64,6 +64,14 @@
         </div>
         #{formee.clear/}
 
+        <div class="field v-block grid-4-12 left">
+            #{formee.label for:'models.Author.category' /}
+            #{formee.selectList for:'models.Author.category_id', items:categories, valueProperty:"id", labelProperty:"name"}
+                <option>Choose</option>
+            #{/formee.selectList}
+        </div>
+        #{formee.clear/}
+
         <div class="grid-12-12">
             <input class="right" type="submit" title="Add">
         </div>

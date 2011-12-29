@@ -28,6 +28,16 @@
         #{formee.h_block for:"models.Author.last_name", type:'text', label_col:3, input_col:4, required:true /}
         #{formee.h_block for:"models.Author.age", type:'text', label_col:3, input_col:4, required:true /}
         #{formee.h_block for:"models.Author.mastermind", type:'checkbool', label_col:3, input_col:4 /}
+        <div class="field h-block grid-12-12">
+            <div class="grid-3-12">
+                #{formee.label for:'models.Author.category' /}
+            </div>
+            <div class="grid-3-12">
+                #{formee.selectList for:'models.Author.category_id', items:categories, valueProperty:"id", labelProperty:"name" /}
+                #{formee.error for:'models.Author.category_id'}#{error 'author.category_id' /}#{/formee.error}
+            </div>
+        </div>
+        #{formee.clear/}
 
         <div class="grid-12-12">
             <input class="right" type="submit" title="Update">

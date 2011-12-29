@@ -1,14 +1,25 @@
 # Initial Data
 
+Category(c1):
+    name:           Writer
+
+Category(c2):
+    name:           Mathematician
+
+Category(c3):
+    name:           Physician
+
 Author(a1):
     age:            30
     first_name:     Hombre
     last_name:      Radioactivo
     mastermind:     false
+    category:       c1
 
 Quote(q1):
     author:         a1
     quotation:      "A darle átomos..."
+
 
 
 

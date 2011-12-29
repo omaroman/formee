@@ -290,7 +290,7 @@ bc. <input type="hidden" name="model.field" value/>
 
 h3. <a name="checkbool"></a>formee.checkbool (HTML4)
 
-The *formee.checkbool* tag is useful for representing a boolean values as a checkbox.
+The *formee.checkbool* tag is useful for representing a boolean value as a checkbox.
 
 Params:
 * <code>arg</code> (implicit optional argument) - name of the model object.

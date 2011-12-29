@@ -1,5 +1,6 @@
 package controllers;
 
+import play.cache.Cache;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.mvc.*;
@@ -45,13 +46,19 @@ public class ApplicationController extends Controller {
 
     public static void add() {
         Author author = new Author();   // Create an empty obj.
-        render(author);
+        List<Category> categories = Cache.get("categories", List.class);
+        if(categories == null) {
+            categories = Category.findAll();
+            Cache.set("categories", categories, "30mn");
+        }
+        render(author, categories);
     }
 
     public static void create(@Valid Author author) {
         if (Validation.hasErrors()) {
             render("@add", author);
         }
+        author.category = Category.findById(author.category_id);
         author.save();
         flash.success("views.author.create.msg");
         ApplicationController.index();
@@ -62,14 +69,30 @@ public class ApplicationController extends Controller {
         if (author == null) {
             notFound();
         } else {
-            render(author);
+            List<Category> categories = Category.findAll();
+
+            // Since category_id field is Transient, it must be set before rendering in order to be comparable.
+            // It can also be set in a @PostLoad method
+            author.category_id = author.category.id;
+
+            render(author, categories);
         }
     }
     
     public static void update(@Valid Author author) {
         if (Validation.hasErrors()) {
-            render("@edit", author);
+            play.Logger.debug("FUCKUP");
+            for (play.data.validation.Error error : Validation.errors()) {
+                play.Logger.debug(error.message());
+            }
+            List<Category> categories = Cache.get("categories", List.class);
+            if(categories == null) {
+                categories = Category.findAll();
+                Cache.set("categories", categories, "30mn");
+            }
+            render("@edit", author, categories);
         }
+        author.category = Category.findById(author.category_id);
         author.save();
         flash.success("views.author.update.msg");
         ApplicationController.index();
