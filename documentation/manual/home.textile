@@ -45,6 +45,26 @@ There are two options:
 
 In case this property is not provided, then by default the naming case will be _camelCase_
 
+*camelCase examples:*
+
+|*Model Name*|*Variable Name*|
+|Model|model|
+|ModelEntity|modelEntity|
+|Model_Entity|model_Entity|
+|Model4Entity|model4Entity|
+|Model_4_Entity|model_4_Entity|
+|CModelEntity|cModelEntity|
+
+*underscore_case examples:*
+
+|*Model Name*|*Variable Name*|
+|Model|model|
+|ModelEntity|model_entity|
+|Model_Entity|model_entity|
+|Model4Entity|model_4_entity|
+|Model_4_Entity|model_4_entity|
+|CModelEntity|c_model_entity|
+
 h3. Internationalisation Messages
 
 The Internationalisation structure is as follows:
@@ -72,17 +92,11 @@ At any rate, you could use class composition and @Transient annotation.
 So don't say I didn't warn you!!!
 
 Params:
-<dl>
-    <dt>_arg_ (the implicit required argument)</dt>
-    <dd>the action to be invoked after submitting</dd>
-    <dt>obj (required)</dt>
-    <dd>the model object from which the form will get the values either for editing or adding (after error submitting, so that the user doesn't have to fill every correct value again)</dd>
-    <dt>method (optional)</dt>
-    <dd>if not specified POST by default</dd>
-    <dt>enctype (optional)</dt>
-    <dd>Determines how the form data is encoded. Whenever data is transmitted from one place to another, there needs to be an agreed upon means of representing that data. Music is translated into written music notation, English is written using letters and punctuation.
-    In most cases you will not need to use this attribute at all. The default value (i.e. if you don't use this attribute at all) is "application/x-www-form-urlencoded", which is sufficient for almost any kind of form data. The one exception is if you want to do file uploads. In that case you should use "multipart/form-data"</dd>
-</dl>
+* <code>arg</code> (the implicit required argument) - action to be invoked after submitting.
+* <code>obj</code> (required) - model object from which the form will get the values either for editing or adding (after error submitting, so that the user doesn't have to fill every correct value again).
+* <code>method</code> (optional) - if not specified POST by default
+* <code>enctype</code> (optional) - determines how the form data is encoded. Whenever data is transmitted from one place to another, there needs to be an agreed upon means of representing that data. Music is translated into written music notation, English is written using letters and punctuation.
+In most cases you will not need to use this attribute at all. The default value (i.e. if you don't use this attribute at all) is "application/x-www-form-urlencoded", which is sufficient for almost any kind of form data. The one exception is if you want to do file uploads. In that case you should use "multipart/form-data".
 
 p(note). Either for _adding/creating_ or _editing/updating_, *formee.tag* requires and object model.
 
@@ -124,16 +138,12 @@ bc. <form action="/route/to/action" method="post" accept-charset="utf-8" enctype
 h3. formee.field
 
 The *formee.field* tag is identical to the built-in Play field tag except it puts two extra properties on the field:
-- _*field.validationData*_ You need to put this data in an HTML5 data attribute called _data-validate_ on your _input_, _select_, or _textarea_ element.
-- _*field.for*_ The full qualified name of a field, i.e. package.Model.field
+* _*field.validationData*_ You need to put this data in an HTML5 data attribute called _data-validate_ on your _input_, _select_, or _textarea_ element.
+* _*field.for*_ The full qualified name of a field, i.e. package.Model.field
 
 Params:
-<dl>
-    <dt>_arg_ (implicit optional argument)</dt>
-    <dd>the name of the model object</dd>
-    <dt>for</dt>
-    <dd>full qualified name of a field, i.e. package.Model.field</dd>
-</dl>
+* <code>arg</code> (implicit optional argument) - name of the model object
+* <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
 
 p(note). See "notes":#notes.
 
@@ -156,16 +166,10 @@ h3. formee.label (HTML4)
 The *formee.label* tag simplifies the creation of label element...
 
 Params:
-<dl>
-    <dt>_arg_ (the implicit optional argument)</dt>
-    <dd>the name of the model object</dd>
-    <dt>msg</dt>
-    <dd>label text</dd>
-    <dt>for (optional)</dt>
-    <dd>full qualified name of a field, i.e. package.Model.field</dd>
-    <dt>required (optional)</dt>
-    <dd>a boolean value for indicating, visually, if it's required</dd>
-</dl>
+* <code>arg</code> (the implicit optional argument) - name of the model object.
+* <code>msg</code> (optional) - label text.
+* <code>for</code> (optional) - full qualified name of a field, i.e. <code>package.Model.field</code>
+* <code>required</code> (optional) - boolean value to indicate, visually, if it's required.
 
 p(note). See "notes":#notes.
 
@@ -183,10 +187,7 @@ The *formee.error* tag is very similar to the built-in Play error tag except it 
 It's highly recommended to use it in conjunction with built-in Play _error_ tag.
 
 Params:
-<dl>
-    <dt>for (required argument)</dt>
-    <dd>full qualified name of a field, i.e. package.Model.field</dd>
-</dl>
+<code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
 
 Tag
 
@@ -198,17 +199,12 @@ bc. <span for='input_element_id' class='error' generated='true'>...</span>
 
 h3. formee.input (HTML4)
 
-The *formee.input* tag generates any input type: *text, textarea, password, hidden, checkbox, radio, _checkbool_*.
+The *formee.input* tag generates any input type: *text, textarea, password, hidden, checkbox, radio, "_checkbool_":#checkbool*.
 
 Params:
-<dl>
-    <dt>_arg_ (implicit optional argument)</dt>
-    <dd>the name of the model object</dd>
-    <dt>for (required argument)</dt>
-    <dd>full qualified name of a field, i.e. package.Model.field</dd>
-    <dt>type</dt>
-    <dd>the input type, if this is not valid, then 'text' is used</dd>
-</dl>
+* <code>arg</code> (implicit optional argument) - name of the model object.
+* <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
+* <code>type</code> (optional) - input type, if not provided or is not valid, then 'text' is used.
 
 p(note). See "notes":#notes.
 
@@ -225,12 +221,8 @@ h3. formee.text (HTML4)
 The *formee.text* tag generates an input element of type _text_
 
 Params:
-<dl>
-    <dt>_arg_ (implicit optional argument)</dt>
-    <dd>the name of the model object</dd>
-    <dt>for (required argument)</dt>
-    <dd>full qualified name of a field, i.e. package.Model.field</dd>
-</dl>
+* <code>arg</code> (implicit optional argument) - name of the model object.
+* <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
 
 p(note). See "notes":#notes.
 
@@ -247,12 +239,8 @@ h3. formee.textarea (HTML4)
 The *formee.textarea* tag generates an input element of type _text_
 
 Params:
-<dl>
-    <dt>_arg_ (implicit optional argument)</dt>
-    <dd>the name of the model object</dd>
-    <dt>for (required argument)</dt>
-    <dd>full qualified name of a field, i.e. package.Model.field</dd>
-</dl>
+* <code>arg</code> (implicit optional argument) - name of the model object.
+* <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
 
 p(note). See "notes":#notes.
 
@@ -269,12 +257,8 @@ h3. formee.password (HTML4)
 The *formee.password* tag generates an input element of type _password_
 
 Params:
-<dl>
-    <dt>_arg_ (implicit optional argument)</dt>
-    <dd>the name of the model object</dd>
-    <dt>for (required argument)</dt>
-    <dd>full qualified name of a field, i.e. package.Model.field</dd>
-</dl>
+* <code>arg</code> (implicit optional argument) - name of the model object.
+* <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
 
 p(note). See "notes":#notes.
 
@@ -291,12 +275,8 @@ h3. formee.hidden (HTML4)
 The *formee.hidden* tag generates an input element of type _hidden_
 
 Params:
-<dl>
-    <dt>_arg_ (implicit optional argument)</dt>
-    <dd>the name of the model object</dd>
-    <dt>for (required argument)</dt>
-    <dd>full qualified name of a field, i.e. package.Model.field</dd>
-</dl>
+* <code>arg</code> (implicit optional argument) - name of the model object.
+* <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
 
 p(note). See "notes":#notes.
 
@@ -308,17 +288,13 @@ Html
 
 bc. <input type="hidden" name="model.field" value/>
 
-h3. formee.checkbool (HTML4)
+h3. <a name="checkbool"></a>formee.checkbool (HTML4)
 
 The *formee.checkbool* tag is useful for representing a boolean values as a checkbox.
 
 Params:
-<dl>
-    <dt>_arg_ (implicit optional argument)</dt>
-    <dd>the name of the model object</dd>
-    <dt>for (required argument)</dt>
-    <dd>full qualified name of a field, i.e. package.Model.field</dd>
-</dl>
+* <code>arg</code> (implicit optional argument) - name of the model object.
+* <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
 
 p(note). See "notes":#notes.
 
@@ -346,20 +322,12 @@ h3. formee.h_block
 The *formee.h_block* tag generates _label_, an _input_ and a _span_ (for error messages) aligned horizontally and wrapped by a _div_ element.
 
 Params:
-<dl>
-    <dt>_arg_ (implicit optional argument)</dt>
-    <dd>the name of the model object</dd>
-    <dt>for (required argument)</dt>
-    <dd>full qualified name of a field, i.e. package.Model.field</dd>
-    <dt>type</dt>
-    <dd>the input type, if this is not valid, then 'text' is used</dd>
-    <dt>label_col (required)</dt>
-    <dd>the number of columns for placing the label. _*See formee framework specification*_</dd>
-    <dt>input_col (required)</dt>
-    <dd>the number of columns for placing the input. _*See "formee framework":http://formee.org/ specification*_</dd>
-    <dt>required (optional)</dt>
-    <dd>for a visual indicator when a field is required</dd>
-</dl>
+* <code>arg</code> (implicit optional argument) - name of the model object.
+* <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
+* <code>type</code> (optinal) - input type, if this is not provided or is not valid, then 'text' is used.
+* <code>label_col</code> (required) - the number of columns for placing the label. _*See formee framework specification*_.
+* <code>input_col</code> (required) - the number of columns for placing the input. _*See "formee framework":http://formee.org/ specification*_.
+* <code>required</code> (optional) - boolean value to indicate, visually, if it's required.
 
 Tag
 
@@ -382,18 +350,13 @@ h3. formee.v_block
 The *formee.v_block* tag generates _label_, an _input_ and a _span_ (for error messages) aligned vertically and wrapped by a _div_ element.
 
 Params:
+* <code>arg</code> (implicit optional argument) - name of the model object.
+* <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
+* <code>type</code> (optinal) - input type, if this is not provided or is not valid, then 'text' is used.
+* <code>col</code> (required) - the number of columns for placing the label. _*See formee framework specification*_.
+* <code>input_col</code> (required) - the number of columns for placing the elements (label, input, span). _*See "formee framework":http://formee.org/ specification*_.
+* <code>required</code> (optional) - boolean value to indicate, visually, if it's required.
 <dl>
-    <dt>_arg_ (implicit optional argument)</dt>
-    <dd>the name of the model object</dd>
-    <dt>for (required argument)</dt>
-    <dd>full qualified name of a field, i.e. package.Model.field</dd>
-    <dt>type</dt>
-    <dd>the input type, if this is not valid, then 'text' is used</dd>
-    <dt>col (required)</dt>
-    <dd>the number of columns for placing the elements (label, input, span). _*See "formee framework":http://formee.org/ specification*_</dd>
-    <dt>required (optional)</dt>
-    <dd>for a visual indicator when a field is required</dd>
-</dl>
 
 Tag
 
@@ -476,8 +439,12 @@ Implement fast tags for HTML5 input types:
 * range
 * color
 
-Implement validation via Ajax
-Include validation using jQuery.validationEngine plug-in
+Implement validation via Ajax.
+
+Implement secure password mechanism.
+
+Include validation using jQuery.validationEngine plug-in.
+
 
 Provide a formee-validate.js min VERSION
 
