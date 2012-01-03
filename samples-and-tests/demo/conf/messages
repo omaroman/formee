@@ -22,7 +22,9 @@ global.form.msg.error=Can you fix please?
 models.Author.first_name=First name
 models.Author.last_name=Last name
 models.Author.age=Age
-models.Author.mastermind=Mastermind
+models.Author.agree=Mastermind
+models.Author.category_id=Category
+models.Author.agree=Agree?
 
 # Views
 views.author.create.msg=Author created successfully!

@@ -24,16 +24,4 @@ public class Category extends Model {
     // Fields
 
     public String name;
-    
-//    public Category() {
-//        id = 0L;
-//    }
-//
-//    public boolean equals(Object o) {
-//        return o instanceof Category && id.equals(((Category) o).id);
-//    }
-//
-//    public int hashCode() {
-//        return id.hashCode();
-//    }
 }

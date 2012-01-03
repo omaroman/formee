@@ -1,15 +1,15 @@
-*{Args: arg, for, type, label_col, input_col, [required]}*
+*{Args: arg, for, type, label_grid, input_grid, [required]}*
 
-%{String classAttr = "field h-block grid-12-12 " + (_class ?: "") }%
+*{%{String classAttr = "field h-block grid-12-12 " + (_class ?: "") }%}*
 
-<div class="${classAttr}">
+#{formee.hbox grid:12, class:_class}
     #{formee.field _arg, for:_for} *{field_name -> _arg, models.Author.field_name -> for}*
-        <div class="grid-${_label_col}-12">
+        #{formee.hbox grid:_label_grid}
             #{formee.label msg:_label, for:field.for, required:_required /}
-        </div>
-        <div class="grid-${_input_col}-12">
+        #{/formee.hbox}
+        #{formee.hbox grid:_input_grid}
             #{formee.input _arg, for:field.for, type:_type, class:field.errorClass /}
             #{formee.error _arg, for:field.for}#{error field.name /}#{/formee.error}
-        </div>
+        #{/formee.hbox}
     #{/formee.field}
-</div>
+#{/formee.hbox}

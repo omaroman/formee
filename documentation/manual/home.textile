@@ -83,6 +83,61 @@ h2. Fast Tags
 
 *First things first*, every standard attribute that supports a html tag not listed here is optional.
 
+h3. formee.clear
+
+The *formee.clear* tag generates a _div_ element for breaking floating elements.
+
+Params:
+* <code>height</code> (optional) - the div height in pixels.
+
+Tag
+
+bc. #{formee.clear height:15/}
+
+bc. #{formee.clear /}
+
+Html
+
+bc. <div class="clear" style="height:15px;"></div>
+
+bc. <div class="clear"></div>
+
+h3. formee.hbox
+
+The *formee.hbox* tag generates a _div_ element for containing more elements aligned horizontally.
+
+* <code>grid</code> (required) - the number of columns for the *div _width_*. _*See "formee framework":http://formee.org/ specification*_.
+
+Tag
+
+bc. #{formee.hbox grid:6}
+...
+#{/formee.hbox}
+
+Html
+
+bc. <div class="hbox grid-6-12>
+...
+</div>
+
+h3. formee.vbox
+
+The *formee.vbox* tag generates a _div_ element for containing more elements aligned vertically.
+
+* <code>grid</code> (required) - the number of columns for the *div _width_*. _*See "formee framework":http://formee.org/ specification*_.
+
+Tag
+
+bc. #{formee.vbox grid:3}
+...
+#{/formee.3box}
+
+Html
+
+bc. <div class="vbox grid-3-12>
+...
+</div>
+
 h3. formee.form (HTML4)
 
 The *formee.form* tag is identical to the built-in Play form tag except it outputs some JavaScript that prepares the form to be validated by the jQuery validation plugin.
@@ -290,7 +345,7 @@ bc. <input type="hidden" name="model.field" value/>
 
 h3. <a name="checkbool"></a>formee.checkbool (HTML4)
 
-The *formee.checkbool* tag is useful for representing a boolean value as a checkbox.
+The *formee.checkbool* tag is useful for representing a *_boolean value_* as a checkbox.
 
 Params:
 * <code>arg</code> (implicit optional argument) - name of the model object.
@@ -307,6 +362,93 @@ Html
 bc. <input type='checkbox' data-validate='{}' class='' id='model_field' name='author.mastermind' value='true' />
 <input type='hidden' name='author.mastermind' value='false'/>
 
+h3. formee.selectList (HTML4)
+
+The *formee.selectList* generates a _select_ element containing a set of _option_ elements.
+
+p(note). This tag is more useful for a field that requires a value from a _Catalog_, therefore the binding must be single object/primitive.
+The annotation validation that makes more sense for this tag is @Required
+
+Params:
+* <code>arg</code> (implicit optional argument) - name of the model object.
+* <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
+* <code>items</code> (required) - a Collection of Objects (not necessarily Models), each item will be an _option_.
+* <code>valueProperty</code> (required) - the Item field from which the value will be retrieved.
+* <code>labelProperty</code> (required) - the Item field from which the label will be named.
+
+p(note). See "notes":#notes.
+
+Tag
+
+#{formee.selectList for:"package.Model.field", items:collection, valueProperty:"id", labelProperty:"name"/}
+
+Html
+
+bc. <select data-validate="..." class="" id="model_field_id" name="model.field">
+    <option></option>
+    <option value="1">Option1</option>
+    <option value="2">Option2</option>
+    ...
+    <option value="n">OptionN</option>
+</select>
+
+h3. formee.checkboxList (HTML4)
+
+The *formee.checkboxList* generates a group of _checkbox_ elements organized in an _ul_ element.
+
+p(note). This tag is more useful for a field that requires one or mores values from a _Catalog_, therefore the binding must be collection/array of objects/primitives.
+
+Params:
+* <code>arg</code> (implicit optional argument) - name of the model object.
+* <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
+* <code>items</code> (required) - a Collection of Objects (not necessarily Models), each item will be a _checkbox_.
+* <code>valueProperty</code> (required) - the Item field from which the value will be retrieved.
+* <code>labelProperty</code> (required) - the Item field from which the label will be named.
+
+p(note). See "notes":#notes.
+
+Tag
+
+#{formee.checkboxList for:"package.Model.field", items:collection, valueProperty:"id", labelProperty:"name"/}
+
+Html
+
+bc. <ul class="formee-list">
+    <li><input type="checkbox" data-validate="..." name="model.field" id="model.field.0" value="0"><label for="model.field.0">Option1</label></li>
+    <li><input type="checkbox" name="model.field" id="model.field.1" value="1"><label for="model.field.1">Option1</label></li>
+    ...
+    <li><input type="checkbox" name="model.field" id="model.field.n" value="n"><label for="model.field.n">OptionN</label></li>
+</ul>
+
+h3. formee.radioList (HTML4)
+
+The *formee.radioList* generates a group of _radio_ elements organized in an _ul_ element.
+
+p(note). This tag is more useful for a field that requires a value from a _Catalog_, therefore the binding must be single object/primitive.
+The annotation validation that makes more sense for this tag is @Required
+
+Params:
+* <code>arg</code> (implicit optional argument) - name of the model object.
+* <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
+* <code>items</code> (required) - a Collection of Objects (not necessarily Models), each item will be a _radio_.
+* <code>valueProperty</code> (required) - the Item field from which the value will be retrieved.
+* <code>labelProperty</code> (required) - the Item field from which the label will be named.
+
+p(note). See "notes":#notes.
+
+Tag
+
+#{formee.radioList for:"package.Model.field", items:collection, valueProperty:"id", labelProperty:"name"/}
+
+Html
+
+bc. <ul class="formee-list">
+    <li><input type="radio" data-validate="..." name="model.field" id="model.field.0" value="0"><label for="model.field.0">Option1</label></li>
+    <li><input type="radio" name="model.field" id="model.field.1" value="1"><label for="model.field.1">Option1</label></li>
+    ...
+    <li><input type="radio" name="model.field" id="model.field.n" value="n"><label for="model.field.n">OptionN</label></li>
+</ul>
+
 h3. <a name="notes"></a>*Notes*
 
 p(note). If _for_ is not provided, an exception is thrown.
@@ -317,25 +459,25 @@ p(note). Provide _arg_ if the name of model object being passed to a template do
 
 h2. Slow Tags
 
-h3. formee.h_block
+h3. formee.h_box
 
-The *formee.h_block* tag generates _label_, an _input_ and a _span_ (for error messages) aligned horizontally and wrapped by a _div_ element.
+The *formee.h_box* tag generates _label_, an _input_ and a _span_ (for error messages) aligned horizontally and wrapped by a _div_ element.
 
 Params:
 * <code>arg</code> (implicit optional argument) - name of the model object.
 * <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
 * <code>type</code> (optinal) - input type, if this is not provided or is not valid, then 'text' is used.
-* <code>label_col</code> (required) - the number of columns for placing the label. _*See formee framework specification*_.
-* <code>input_col</code> (required) - the number of columns for placing the input. _*See "formee framework":http://formee.org/ specification*_.
+* <code>label_grid</code> (required) - the number of columns for placing the label. _*See "formee framework":http://formee.org/ specification*_.
+* <code>input_grid</code> (required) - the number of columns for placing the input. _*See "formee framework":http://formee.org/ specification*_.
 * <code>required</code> (optional) - boolean value to indicate, visually, if it's required.
 
 Tag
 
-bc. #{formee.h_block for:"package.Model.field", type:'text', label_col:3, input_col:4, required:true /}
+bc. #{formee.h_box for:"package.Model.field", type:'text', label_grid:3, input_grid:4, required:true /}
 
 Html
 
-bc. <div class="field h-block grid-12-12 ">
+bc. <div class="h-block grid-12-12 ">
     <div class="grid-3-12">
         <label for='model_fiel' required="true" >Field name<em class='formee-req'>*</em></label>
     </div>
@@ -345,43 +487,29 @@ bc. <div class="field h-block grid-12-12 ">
     </div>
 </div>
 
-h3. formee.v_block
+h3. formee.v_box
 
-The *formee.v_block* tag generates _label_, an _input_ and a _span_ (for error messages) aligned vertically and wrapped by a _div_ element.
+The *formee.v_box* tag generates _label_, an _input_ and a _span_ (for error messages) aligned vertically and wrapped by a _div_ element.
 
 Params:
 * <code>arg</code> (implicit optional argument) - name of the model object.
 * <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
 * <code>type</code> (optinal) - input type, if this is not provided or is not valid, then 'text' is used.
-* <code>col</code> (required) - the number of columns for placing the label. _*See formee framework specification*_.
-* <code>input_col</code> (required) - the number of columns for placing the elements (label, input, span). _*See "formee framework":http://formee.org/ specification*_.
+* <code>grid</code> (required) - the number of columns for placing the elements (label, input, and span). _*See "formee framework":http://formee.org/ specification*_.
 * <code>required</code> (optional) - boolean value to indicate, visually, if it's required.
 <dl>
 
 Tag
 
-bc. #{formee.v_block for:'package.Model.field', type:'text', col:4, required:true /}
+bc. #{formee.v_box for:'package.Model.field', type:'text', grid:4, required:true /}
 
 Html
 
-bc. <div class="field v-block grid-4-12 ">
+bc. <div class="v-block grid-4-12 ">
      <label for='model_field' required="true" >Field name<em class='formee-req'>*</em></label>
     <input type='text' data-validate='{...}' class='' id='model_field' name='model.field' value=''  />
     <span class='error' for='model_field' generated='true'></span>
 </div>
-
-
-h3. formee.clear
-
-The *formee.clear* tag generates a _div_ element for breaking floating elements.
-
-Tag
-
-bc. #{formee.clear/}
-
-Html
-
-bc. <div class="clear"></div>
 
 h3. formee.css
 
@@ -415,13 +543,13 @@ h2. Sample application
 
 One sample demo is part of the distribution. Don’t forget to run play deps so that it resolves dependencies.
 
+p(note). The demo was laid out using "52framework":http://52framework.com/
+
 h2. TODO
 
 Implement fast tags for HTML4 input types:
 
-* radioList
-* checkboxList
-* selectList
+* multipleSelectList
 
 Implement fast tags for HTML5 input types:
 
@@ -460,3 +588,4 @@ Formee module is inpired and based on the following components:
 - "html5validate":http://www.playframework.org/modules/html5validation module by Sebastian Hoß
 - "jquery.validate plug-in":http://bassistance.de/jquery-plugins/jquery-plugin-validation/ by Jörn Zaefferer
 - "jquery.metadata plug-in":http://plugins.jquery.com/project/metadata by John Resig, Yehuda Katz, Jörn Zaefferer, Paul McLanahan
+- "52framework":http://52framework.com/ by enavu network folks.

@@ -17,14 +17,23 @@
         <fieldset>
             <legend>Author</legend>
 
-            #{formee.v_block for:'models.Author.first_name', type:'text', col:4, required:true /}
-            #{formee.v_block for:'models.Author.last_name', type:'text', col:4, required:true /}
-            #{formee.v_block for:'models.Author.age', col:4, type:'text', required:true /}
-            #{formee.v_block for:"models.Author.mastermind", type:'checkbool', col:4 /}
+            #{formee.v_box for:'models.Author.first_name', type:'text', grid:4, required:true /}
+            #{formee.v_box for:'models.Author.last_name', type:'text', grid:4, required:true /}
+            #{formee.v_box for:'models.Author.age', grid:4, type:'text', required:true /}
+            #{formee.v_box for:"models.Author.mastermind", type:'checkbool', grid:4 /}
+            #{formee.vbox grid:4}
+                #{formee.field for:'models.Author.category_id'}
+                    #{formee.label for:field.for /}
+                    #{formee.selectList for:field.for, items:categories, valueProperty:"id", labelProperty:"name"/}
+                    #{formee.error for:field.for}#{error field.name /}#{/formee.error}
+                #{/formee.field}
+            #{/formee.vbox}
+            #{formee.v_box for:"models.Author.agree", type:'checkbool', grid:4, required:true /}
 
-            <div class="grid-12-12">
-                <input class="right" type="submit" title="Add">
-            </div>
+            #{formee.hbox grid:12}
+                #{formee.submit title:"Add", class:"right"/}
+            #{/formee.hbox}
+
         </fieldset>
     #{/formee.form}
     <!-- END #maincontent .col_12-->
@@ -32,5 +41,5 @@
 </section>
 <!-- END #content .row -->
 
-<div class="clear" style="height:15px;"></div>
+#{formee.clear height:15/}
 <!-- clear -->

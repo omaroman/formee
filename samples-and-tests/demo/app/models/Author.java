@@ -23,4 +23,8 @@ public class Author extends AuthorAbs {
     public Integer age;   // Just for testing purposes
 
     public boolean mastermind;
+    
+    @Transient
+    @Required
+    public Boolean agree = false;
 }

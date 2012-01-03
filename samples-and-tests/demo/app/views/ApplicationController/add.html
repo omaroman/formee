@@ -23,58 +23,97 @@
             </div>
         #{/ifErrors}
 
-        <div class="field h-block grid-12-12">
+        #{formee.hbox grid:12}
             #{formee.field for:'models.Author.first_name'}
-                <div class="grid-3-12">
+                #{formee.hbox grid:3}
                     #{formee.label for:field.for, required:true /}
-                </div>
-                <div class="grid-4-12">
+                #{/formee.hbox}
+                #{formee.hbox grid:4}
                     #{formee.text for:field.for /}
                     #{formee.error for:field.for }#{error field.name /}#{/formee.error}
-                </div>
+                #{/formee.hbox}
             #{/formee.field}
-        </div>
+        #{/formee.hbox}
 
-        <div class="field h-block grid-12-12">
+        #{formee.hbox grid:12}
             #{formee.field for:'models.Author.last_name'}
-                <div class="grid-3-12">
+                #{formee.hbox grid:3}
                     #{formee.label for:field.for, required:true /}
-                </div>
-                <div class="grid-4-12">
+                #{/formee.hbox}
+                #{formee.hbox grid:4}
                     #{formee.text for:field.for /}
                     #{formee.error for:field.for}#{error field.name /}#{/formee.error}
-                </div>
+                #{/formee.hbox}
             #{/formee.field}
-        </div>
+        #{/formee.hbox}
 
-        <div class="field v-block grid-4-12 right">
+        #{formee.vbox grid:4, class:"right"}
             #{formee.field for:'models.Author.age'}
                 #{formee.label for:field.for, required:true /}
                 #{formee.text for:field.for /}
                 #{formee.error for:field.for}#{error field.name /}#{/formee.error}
             #{/formee.field}
-        </div>
+        #{/formee.vbox}
         #{formee.clear/}
 
-        <div class="field v-block grid-4-12 left">
+        #{formee.hbox grid:12}
             #{formee.field for:'models.Author.mastermind'}
-                #{formee.label for:field.for /}
-                #{formee.checkbool for:field.for /}
+                #{formee.hbox grid:3}
+                    #{formee.label for:field.for /}
+                #{/formee.hbox}
+                #{formee.hbox grid:1}
+                    #{formee.checkbool for:field.for /}
+                    *{#{formee.error for:field.for}#{error field.name /}#{/formee.error}}*
+                #{/formee.hbox}
             #{/formee.field}
-        </div>
+        #{/formee.hbox}
         #{formee.clear/}
 
-        <div class="field v-block grid-4-12 left">
-            #{formee.label for:'models.Author.category' /}
-            #{formee.selectList for:'models.Author.category_id', items:categories, valueProperty:"id", labelProperty:"name"}
-                <option>Choose</option>
-            #{/formee.selectList}
-        </div>
+        *{<div class="field v-block grid-4-12 left">}*
+            *{#{formee.field for:'models.Author.category_id'}}*
+                *{#{formee.label for:field.for /}}*
+                *{#{formee.selectList for:field.for, items:categories, valueProperty:"id", labelProperty:"name"/}}*
+                *{#{formee.error for:field.for}#{error field.name /}#{/formee.error}}*
+            *{#{/formee.field}}*
+        *{</div>}*
+        *{#{formee.clear/}}*
+
+        #{formee.hbox grid:12}
+            #{formee.field for:'models.Author.category_id'}
+                #{formee.label for:field.for /}
+                #{formee.radioList for:field.for, items:categories, valueProperty:"id", labelProperty:"name"/}
+                #{formee.error for:field.for}#{error field.name /}#{/formee.error}
+            #{/formee.field}
+        #{/formee.hbox}
         #{formee.clear/}
 
-        <div class="grid-12-12">
-            <input class="right" type="submit" title="Add">
-        </div>
+        *{<div class="field v-block grid-8-12 left">}*
+            *{#{formee.field for:'models.Author.category_id'}}*
+                *{#{formee.label for:field.for /}}*
+                *{#{formee.checkboxList for:field.for, items:categories, valueProperty:"id", labelProperty:"name"/}}*
+                *{#{formee.error for:field.for}#{error field.name /}#{/formee.error}}*
+            *{#{/formee.field}}*
+        *{</div>}*
+        *{#{formee.clear/}}*
+
+        #{formee.hbox grid:12}
+            #{formee.field for:'models.Author.agree'}
+                #{formee.hbox grid:9}#{/formee.hbox}  *{left padding}*
+                #{formee.hbox grid:1}
+                    #{formee.checkbool for:field.for/}
+                    #{formee.error for:field.for}#{error field.name /}#{/formee.error}
+                #{/formee.hbox}
+                #{formee.hbox grid:2}
+                    #{formee.label for:field.for, required:true /}
+                #{/formee.hbox}
+            #{/formee.field}
+        #{/formee.hbox}
+        #{formee.clear/}
+
+        #{formee.hbox grid:12}
+            #{formee.submit title:"Add", class:"right"/}
+        #{/formee.hbox}
+
     </fieldset>
 #{/formee.form}
     <!-- END #maincontent .col_12-->
@@ -82,5 +121,5 @@
 </section>
 <!-- END #content .row -->
 
-<div class="clear" style="height:15px;"></div>
+#{formee.clear height:15/}
 <!-- clear -->
