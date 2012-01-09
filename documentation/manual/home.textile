@@ -1,6 +1,6 @@
 h1. Formee
 
-*_Formee_* not only takes care of html forms designs, but also validates its data from both client-side and server-side based on model validation annotations.
+*_Formee_* eases and helps out to build html forms designs, and also validates its data from both client-side and server-side based on model validation annotations.
 
 h2. Features
 
