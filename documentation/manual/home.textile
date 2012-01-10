@@ -449,6 +449,48 @@ bc. <ul class="formee-list">
     <li><input type="radio" name="model.field" id="model.field.n" value="n"><label for="model.field.n">OptionN</label></li>
 </ul>
 
+h3. formee.submit (HTML4)
+
+The *formee.submit* generates an input element of type *submit*.
+
+Params:
+* <code>value</code> (optional) - visual name of the input. If not provided, the web browser creates a default value.</code>
+
+p(note). This tag will try to get an internationalized message based on the value provided and the messages file.
+
+Tag
+
+bc. #{formee.submit value:"Create" /}
+
+or
+
+bc. #{formee.submit value:"views.model.create.submit" /}
+
+Html
+
+bc. <input type="submit" value="Create">
+
+h3. formee.reset (HTML4)
+
+The *formee.reset* generates an input element of type *reset*.
+
+Params:
+* <code>value</code> (optional) - visual name of the input. If not provided, the web browser creates a default value.</code>
+
+p(note). This tag will try to get an internationalized message based on the value provided and the messages file.
+
+Tag
+
+bc. #{formee.reset value:"Clear" /}
+
+or
+
+bc. #{formee.reset value:"views.model.reset" /}
+
+Html
+
+bc. <input type="reset" value="Clear">
+
 h3. <a name="notes"></a>*Notes*
 
 p(note). If _for_ is not provided, an exception is thrown.

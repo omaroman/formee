@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                                       ApplicationController.index
+GET     /                                       Application.index
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
@@ -11,14 +11,14 @@ GET     /favicon.ico                            404
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public
 
-GET     /author/add_h                           ApplicationController.add_h
-POST    /author/create_h                        ApplicationController.create_h
-GET     /author/add_v                           ApplicationController.add_v
-POST    /author/create_v                        ApplicationController.create_v
-GET     /author/add                             ApplicationController.add
-POST    /author/create                          ApplicationController.create
-GET     /author/{id}/edit                       ApplicationController.edit
-POST    /author/{id}/delete                     ApplicationController.delete
+GET     /author/add_h                           Application.add_h
+POST    /author/create_h                        Application.create_h
+GET     /author/add_v                           Application.add_v
+POST    /author/create_v                        Application.create_v
+GET     /author/add                             Application.add
+POST    /author/create                          Application.create
+GET     /author/{id}/edit                       Application.edit
+POST    /author/{id}/delete                     Application.delete
 
 # Catch all
 *       /{controller}/{action}                  {controller}.{action}

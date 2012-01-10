@@ -32,8 +32,8 @@
             <div class="model">
                 <span class="col col_2 model-field">${_.first_name}</span>
                 <span class="col col_2 model-field">${_.last_name}</span>
-                #{a @ApplicationController.edit(_.id), class:"col col_2 model-field align_center"}Edit#{/a}
-                #{a @ApplicationController.delete(_.id), class:"col col_2 model-field align_center"}Delete#{/a}
+                #{a @Application.edit(_.id), class:"col col_2 model-field align_center"}Edit#{/a}
+                #{a @Application.delete(_.id), class:"col col_2 model-field align_center"}Delete#{/a}
                 <span class="clear"></span>
             </div>
         #{/list}

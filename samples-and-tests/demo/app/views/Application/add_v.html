@@ -13,7 +13,7 @@
 <section id="content" role="container" class="row" >
 
     <!-- BEGIN #maincontent .col_12-->
-    #{formee.form @ApplicationController.create_v(), obj:author, class:'col col_8 push_4 formee'}
+    #{formee.form @Application.create_v(), obj:author, class:'col col_8 push_4 formee'}
         <fieldset>
             <legend>Author</legend>
 
@@ -31,7 +31,7 @@
             #{formee.v_box for:"models.Author.agree", type:'checkbool', grid:4, required:true /}
 
             #{formee.hbox grid:12}
-                #{formee.submit title:"Add", class:"right"/}
+                #{formee.submit value:"views.author.create.submit", class:"right"/}
             #{/formee.hbox}
 
         </fieldset>

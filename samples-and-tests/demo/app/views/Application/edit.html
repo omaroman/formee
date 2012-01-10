@@ -13,7 +13,7 @@
 <section id="content" role="container" class="row" >
 
     <!-- BEGIN #maincontent .col_12-->
-#{formee.form @ApplicationController.update(), obj:author, class:'col col_8 push_4'}
+#{formee.form @Application.update(), obj:author, class:'col col_8 push_4'}
     <fieldset>
         <legend>Author</legend>
 
@@ -41,7 +41,7 @@
         #{formee.clear /}
 
         #{formee.hbox grid:12}
-            #{formee.submit title:"Update", class:"right"/}
+            #{formee.submit value:"views.author.update.submit", class:"right"/}
         #{/formee.hbox}
 
     </fieldset>

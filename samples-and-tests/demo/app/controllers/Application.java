@@ -9,7 +9,7 @@ import java.util.*;
 
 import models.*;
 
-public class ApplicationController extends Controller {
+public class Application extends Controller {
 
     @Util
     private static List<Category> loadCategories() {
@@ -40,7 +40,7 @@ public class ApplicationController extends Controller {
         author.category = Category.findById(author.category_id);
         author.save();
         flash.success("views.author.create.msg");
-        ApplicationController.index();
+        Application.index();
     }
 
     public static void add_v() {
@@ -57,7 +57,7 @@ public class ApplicationController extends Controller {
         author.category = Category.findById(author.category_id);
         author.save();
         flash.success("views.author.create.msg");
-        ApplicationController.index();
+        Application.index();
     }
 
     public static void add() {
@@ -74,7 +74,7 @@ public class ApplicationController extends Controller {
         author.category = Category.findById(author.category_id);
         author.save();
         flash.success("views.author.create.msg");
-        ApplicationController.index();
+        Application.index();
     }
 
     public static void edit(Long id) {
@@ -101,7 +101,7 @@ public class ApplicationController extends Controller {
         author.category = Category.findById(author.category_id);
         author.save();
         flash.success("views.author.update.msg");
-        ApplicationController.index();
+        Application.index();
     }
     
     public static void delete(Long id) {

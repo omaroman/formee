@@ -1,25 +1,25 @@
 package tags;
 
 import groovy.lang.Closure;
-
-import java.io.PrintWriter;
-import java.lang.reflect.Field;
-import java.util.*;
-
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import play.data.validation.*;
+import play.data.validation.Validation;
 import play.i18n.Messages;
-import play.modules.formee.Formee;
 import play.modules.formee.FormeeProps;
 import play.modules.formee.FormeeValidation;
 import play.modules.formee.InputType;
 import play.mvc.Scope.Flash;
 import play.templates.BaseTemplate;
 import play.templates.FastTags;
-import play.templates.JavaExtensions;
 import play.templates.GroovyTemplate.ExecutableTemplate;
+import play.templates.JavaExtensions;
+
+import java.io.PrintWriter;
+import java.lang.reflect.Field;
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @FastTags.Namespace("formee")
 public class FormeeTags extends FastTags {
@@ -192,25 +192,31 @@ public class FormeeTags extends FastTags {
         out.println(html.toString());
     }
 
+    @SuppressWarnings("unchecked")
     public static void _submit(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) throws Exception {
-        Object title = args.get("title") != null ? args.get("title") : null;
-        if (title == null) {
-            throw new IllegalArgumentException("There's no 'title' argument");
+        Object value = args.get("value") != null ? args.get("value") : null;
+        if (value != null) {
+            String i18nSubmit = (Messages.get(value));
+            ((Map<Object, Object>) args).put("value", i18nSubmit);
         }
 
+        Map.Entry<String, String> modelField = null;    // NO modelField needed by a "submit" type
         String input = "<input type='%s' class='%s' %s/>";
-        input = formatHtmlElementAttributes(args, InputType.SUBMIT, input, null);
+        input = formatHtmlElementAttributes(args, InputType.SUBMIT, input, modelField);
         out.print(input);
     }
 
+    @SuppressWarnings("unchecked")
     public static void _reset(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) throws Exception {
-        Object title = args.get("title") != null ? args.get("title") : null;
-        if (title == null) {
-            throw new IllegalArgumentException("There's no 'title' argument");
+        Object value = args.get("value") != null ? args.get("value") : null;
+        if (value != null) {
+            String i18nSubmit = (Messages.get(value));
+            ((Map<Object, Object>) args).put("value", i18nSubmit);
         }
 
+        Map.Entry<String, String> modelField = null;    // NO modelField needed by a "submit" type
         String input = "<input type='%s' class='%s' %s/>";
-        input = formatHtmlElementAttributes(args, InputType.RESET, input, null);
+        input = formatHtmlElementAttributes(args, InputType.RESET, input, modelField);
         out.print(input);
     }
     

@@ -30,3 +30,5 @@ models.Author.agree=Agree?
 views.author.create.msg=Author created successfully!
 views.author.update.msg=Author updated successfully!
 views.author.delete.msg=Author deleted successfully!
+views.author.create.submit=Create
+views.author.update.submit=Update
