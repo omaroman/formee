@@ -29,11 +29,6 @@ public class AuthorAbs extends Model {
     // --
     public Category category = new Category(); // belongs_to_one :category
 
-    // Trick for passing the "category"
-    @Transient
-    @Required
-    public Long category_id;
-
     // FIELDS
 
     @Required
