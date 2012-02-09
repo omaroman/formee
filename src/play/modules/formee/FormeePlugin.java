@@ -13,7 +13,6 @@ import java.util.*;
 import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
 
-import groovy.util.MapEntry;
 import play.Logger;
 import play.Play;
 import play.PlayPlugin;
