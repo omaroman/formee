@@ -362,6 +362,27 @@ Html
 bc. <input type='checkbox' data-validate='{}' class='' id='model_field' name='author.mastermind' value='true' />
 <input type='hidden' name='author.mastermind' value='false'/>
 
+h3. formee.timestamp (HTML4)
+
+The *formee.timestamp* tag is useful just for formatting @Temporal (DATE, TIME & TIMESTAMP) fields when editing a record.
+The pattern date is gotten from @As(value="...") annotation, if there's no such annotation, then the pattern is gotten from _date.format_ from *application.conf*
+
+p(note). If pattern date fails to be obtained, then the default pattern is: *yyyy-MM-dd*
+
+Params:
+* <code>arg</code> (implicit optional argument) - name of the model object.
+* <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
+
+p(note). See "notes":#notes.
+
+Tag
+
+bc. #{formee.timestamp for:"package.Model.field" /}
+
+Html
+
+bc. <input type="text" data-validate="{...}" class id="model_field" name="model.field" value/>
+
 h3. formee.selectList (HTML4)
 
 The *formee.selectList* generates a _select_ element containing a set of _option_ elements.
@@ -375,6 +396,10 @@ Params:
 * <code>items</code> (required) - a Collection of Objects (not necessarily Models), each item will be an _option_.
 * <code>valueProperty</code> (required) - the Item field from which the value will be retrieved.
 * <code>labelProperty</code> (required) - the Item field from which the label will be named.
+* <code>supplementaryLabelProperty</code> (optional) - the Item field from which a supplementary label will be named.
+
+p(note). In case supplementaryLabelProperty is used, the option element will be formed as follows:
+@<option>label - supplementaryLabel</option>@
 
 p(note). See "notes":#notes.
 
@@ -508,20 +533,21 @@ The *formee.h_box* tag generates _label_, an _input_ and a _span_ (for error mes
 Params:
 * <code>arg</code> (implicit optional argument) - name of the model object.
 * <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
-* <code>type</code> (optinal) - input type, if this is not provided or is not valid, then 'text' is used.
+* <code>type</code> (optional) - input type, if this is not provided or is not valid, then 'text' is used.
+* <code>value</code> (optional) - field value, if this is not provided, then the default value from model is used. When creating a record, it's useful as a suggested value.
 * <code>label_grid</code> (required) - the number of columns for placing the label. _*See "formee framework":http://formee.org/ specification*_.
 * <code>input_grid</code> (required) - the number of columns for placing the input. _*See "formee framework":http://formee.org/ specification*_.
 * <code>required</code> (optional) - boolean value to indicate, visually, if it's required.
 
 Tag
 
-bc. #{formee.h_box for:"package.Model.field", type:'text', label_grid:3, input_grid:4, required:true /}
+bc. #{formee.h_box for:"package.Model.field", type:'text', value:val, label_grid:3, input_grid:4, required:true /}
 
 Html
 
 bc. <div class="h-block grid-12-12 ">
     <div class="grid-3-12">
-        <label for='model_fiel' required="true" >Field name<em class='formee-req'>*</em></label>
+        <label for='model_field' required="true" >Field name<em class='formee-req'>*</em></label>
     </div>
     <div class="grid-4-12">
         <input type='text' data-validate='{...}' class='' id='model_field' name='model.field' value=''  />
@@ -536,14 +562,15 @@ The *formee.v_box* tag generates _label_, an _input_ and a _span_ (for error mes
 Params:
 * <code>arg</code> (implicit optional argument) - name of the model object.
 * <code>for</code> (required) - full qualified name of a field, i.e. <code>package.Model.field</code>
-* <code>type</code> (optinal) - input type, if this is not provided or is not valid, then 'text' is used.
+* <code>type</code> (optional) - input type, if this is not provided or is not valid, then 'text' is used.
+* <code>value</code> (optional) - field value, if this is not provided, then the default value from model is used. When creating a record, it's useful as a suggested value.
 * <code>grid</code> (required) - the number of columns for placing the elements (label, input, and span). _*See "formee framework":http://formee.org/ specification*_.
 * <code>required</code> (optional) - boolean value to indicate, visually, if it's required.
 <dl>
 
 Tag
 
-bc. #{formee.v_box for:'package.Model.field', type:'text', grid:4, required:true /}
+bc. #{formee.v_box for:'package.Model.field', type:'text', value:val, grid:4, required:true /}
 
 Html
 
@@ -592,6 +619,10 @@ h2. TODO
 Implement fast tags for HTML4 input types:
 
 * multipleSelectList
+
+Implement validation for @As annotation from @Temporal fields
+
+Implement a _calendar_ input type
 
 Implement fast tags for HTML5 input types:
 

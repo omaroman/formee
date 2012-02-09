@@ -12,5 +12,7 @@
 /samples-and-tests/demo/logs/*
 /samples-and-tests/demo/data
 /samples-and-tests/demo/db
+/samples-and-tests/demo/demo.iml
 /samples-and-tests/demo/demo.ipr
+/samples-and-tests/demo/demo.iws
 /.idea

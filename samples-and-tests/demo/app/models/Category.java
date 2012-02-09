@@ -24,4 +24,5 @@ public class Category extends Model {
     // Fields
 
     public String name;
+    public String grade;
 }

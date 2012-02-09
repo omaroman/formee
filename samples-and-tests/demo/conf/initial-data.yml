@@ -2,12 +2,15 @@
 
 Category(c1):
     name:           Writer
+    grade:          A
 
 Category(c2):
     name:           Mathematician
+    grade:          B
 
 Category(c3):
     name:           Physician
+    grade:          A+
 
 Author(a1):
     age:            30
@@ -15,6 +18,7 @@ Author(a1):
     last_name:      Radioactivo
     mastermind:     false
     category:       c1
+    birthday:       1980-01-23
 
 Quote(q1):
     author:         a1

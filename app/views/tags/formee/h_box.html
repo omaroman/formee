@@ -1,4 +1,4 @@
-*{Args: arg, for, type, label_grid, input_grid, [required]}*
+*{Args: arg, for, type, value, label_grid, input_grid, [required]}*
 
 *{%{String classAttr = "field h-block grid-12-12 " + (_class ?: "") }%}*
 
@@ -8,7 +8,8 @@
             #{formee.label msg:_label, for:field.for, required:_required /}
         #{/formee.hbox}
         #{formee.hbox grid:_input_grid}
-            #{formee.input _arg, for:field.for, type:_type, class:field.errorClass /}
+            %{String val = _value ?: field.value}%
+            #{formee.input _arg, for:field.for, type:_type, class:field.errorClass, value:val /}
             #{formee.error _arg, for:field.for}#{error field.name /}#{/formee.error}
         #{/formee.hbox}
     #{/formee.field}

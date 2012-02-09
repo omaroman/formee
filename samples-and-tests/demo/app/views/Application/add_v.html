@@ -28,6 +28,7 @@
                     #{formee.error for:field.for}#{error field.name /}#{/formee.error}
                 #{/formee.field}
             #{/formee.vbox}
+            #{formee.v_box for:"models.Author.birthday", type:'timestamp', grid:4 /}
             #{formee.v_box for:"models.Author.agree", type:'checkbool', grid:4, required:true /}
 
             #{formee.hbox grid:12}

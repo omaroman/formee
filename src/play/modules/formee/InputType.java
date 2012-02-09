@@ -27,6 +27,7 @@ public enum InputType {
     SELECT_LIST,// A list for option elements
     RADIO_LIST, // A list of radios
     CHECKBOX_LIST,  // A list of checkboxes
+    TIMESTAMP,  // Date & Time
 
     // HTML5 input types:
     SEARCH,

@@ -5,12 +5,12 @@
  */
 package models;
 
+import play.data.binding.As;
 import play.data.validation.Min;
 import play.data.validation.Required;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "authors")
@@ -30,4 +30,11 @@ public class Author extends AuthorAbs {
     @Transient
     @Required
     public Long category_id;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    //@As(value = "dd/MM/yyyy")
+    //@As(lang = "es_MX", value = "dd/MM/yyyy")
+    public Date birthday;
+
+
 }

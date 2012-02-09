@@ -1,11 +1,12 @@
-*{Args: arg, for, for, type, grid, [required]}*
+*{Args: arg, for, type, value, grid, [required]}*
 
 *{%{String classAttr = "field v-block grid-${_col}-12 " + (_class ?: "") }%}*
 
 #{formee.vbox grid:_grid, class:_class}
     #{formee.field _arg, for:_for} *{field_name -> _arg, models.Author.field_name -> for}*
         #{formee.label msg:_label, for:field.for, required:_required /}
-        #{formee.input _arg, for:field.for, type:_type, class:field.errorClass /}
+        %{String val = _value ?: field.value}%
+        #{formee.input _arg, for:field.for, type:_type, class:field.errorClass, value:val /}
         #{formee.error _arg, for:field.for}#{error field.name /}#{/formee.error}
     #{/formee.field}
 #{/formee.vbox}

@@ -111,6 +111,18 @@
         #{formee.clear/}
 
         #{formee.hbox grid:12}
+            #{formee.field for:'models.Author.birthday'}
+                #{formee.hbox grid:3}
+                    #{formee.label for:field.for /}
+                #{/formee.hbox}
+                #{formee.hbox grid:4}
+                    #{formee.text for:field.for /}
+                    #{formee.error for:field.for }#{error field.name /}#{/formee.error}
+                #{/formee.hbox}
+            #{/formee.field}
+        #{/formee.hbox}
+
+        #{formee.hbox grid:12}
             #{formee.reset value:"Clear", class:"right"/}
             #{formee.submit value:"views.author.create.submit", class:"right"/}
         #{/formee.hbox}

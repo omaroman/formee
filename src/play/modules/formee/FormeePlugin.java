@@ -104,8 +104,7 @@ public class FormeePlugin extends PlayPlugin {
 //        }
 
         formeeValidation.setModelFieldValidation(modelFieldValidation);
-        // System.out.println("LOOOOOOL END" + MapSingleton.getModelFieldValidation());
-
+//        play.Logger.debug("FORMEE END %s", modelFieldValidation);
     }
 
     

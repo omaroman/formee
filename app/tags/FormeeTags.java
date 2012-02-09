@@ -1,9 +1,14 @@
 package tags;
 
 import groovy.lang.Closure;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import play.Logger;
+import play.Play;
+import play.data.binding.As;
 import play.data.validation.Validation;
+import play.i18n.Lang;
 import play.i18n.Messages;
 import play.modules.formee.FormeeProps;
 import play.modules.formee.FormeeValidation;
@@ -15,6 +20,7 @@ import play.templates.GroovyTemplate.ExecutableTemplate;
 import play.templates.JavaExtensions;
 
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.AbstractMap;
 import java.util.HashMap;
@@ -72,6 +78,8 @@ public class FormeeTags extends FastTags {
                 // I guess it doesn't make sense to implement a single radio input
             } else if (type.equals("checkbool")) {
                 _checkbool(args, body, out, template, fromLine);
+            } else if (type.equals("timestamp")) {
+                _timestamp(args, body, out, template, fromLine);
             } else if (type.equals("radio")) {
                 // TODO: Implement
                 // I guess it doesn't make sense to implement a single radio input
@@ -600,6 +608,10 @@ public class FormeeTags extends FastTags {
         if (labelProperty == null) {
             throw new IllegalArgumentException("There's no 'labelProperty' argument");
         }
+        String supplementaryLabelProperty = args.get("supplementaryLabelProperty") != null ? (String) args.remove("supplementaryLabelProperty") : null;
+//        if (supplementaryLabelProperty == null) {
+//            throw new IllegalArgumentException("There's no 'labelProperty' argument");
+//        }
 
         String input = "<select data-validate='%s' class='%s' id='%s' name='%s' %s>";
         input = formatHtmlElementAttributes(args, InputType.SELECT_LIST, input, modelField);
@@ -617,6 +629,10 @@ public class FormeeTags extends FastTags {
             html = new StringBuilder();
             Object val = getFieldValue(item, valueProperty);    // get value via reflection
             Object label = getFieldValue(item, labelProperty);  // get value via reflection
+            Object supplementaryLabel = null;
+            if (supplementaryLabelProperty != null) {
+                supplementaryLabel = getFieldValue(item, supplementaryLabelProperty);  // get value via reflection    
+            }
 
 //            play.Logger.debug("VALUE: %s", value);
 //            play.Logger.debug("VAL: %s", val);
@@ -631,7 +647,11 @@ public class FormeeTags extends FastTags {
 //                play.Logger.debug("WARNING. Value for %s is null", name);
             }
             html.append(">");
-            html.append(label);
+            if (supplementaryLabel != null ) {
+                html.append(String.format("%s - %s", label, supplementaryLabel));
+            } else {
+                html.append(label);
+            }
             html.append("</option>");
             out.println(html.toString());
         }
@@ -639,7 +659,13 @@ public class FormeeTags extends FastTags {
         out.println("</select>");
     }
 
-
+    public static void _timestamp(Map<?, ?> args, Closure body, PrintWriter out, ExecutableTemplate template, int fromLine) throws Exception {
+        Map.Entry<String, String> modelField = getModelField(args);
+        String input = "<input type='%s' data-validate='%s' class='%s' id='%s' name='%s' value='%s' %s />";
+        input = formatHtmlElementAttributes(args, InputType.TIMESTAMP, input, modelField);
+        out.print(input);
+        //out.print(body == null ? "" : String.format(JavaExtensions.toString(body), checkForConfirmElement(body, input)));
+    }
 
     /**
      * Generates a formatted HTML element linked to a certain model field given
@@ -651,25 +677,28 @@ public class FormeeTags extends FastTags {
      * @return String representing the HTML element after embedding the attributes and the validation in it.
      * @throws Exception -
      */
-    static String formatHtmlElementAttributes(Map<?, ?> args, InputType inputType, String htmlElement, Map.Entry<String, String> modelField) throws Exception {
+    private static String formatHtmlElementAttributes(Map<?, ?> args, InputType inputType, String htmlElement, Map.Entry<String, String> modelField) throws Exception {
         String arg = args.get("arg") != null ? args.get("arg").toString() : null;
 
         Object id = args.remove("id");
         Object _class = args.remove("class");
         Object name = args.remove("name");
-        Object dataValidation = null;   // Useful then input type is "submit" or "reset"
+        
+        Object dataValidation = null;   // Useful when input type is "submit" or "reset"
         if (modelField != null) {
             dataValidation = getDataValidation(modelField);
         }
-        Object value = null;    // Useful then input type is "submit" or "reset"
-        if (modelField != null) {
-            value = getDefaultValue(modelField);
-        }
-
         if (dataValidation == null) {
             dataValidation = "";
         }
-
+        
+        Object value = null;    // Useful when input type is "submit" or "reset"
+        if (modelField != null) {
+            value = args.get("value");  // In case the value was already provided
+            if (value == null) {
+                value = getDefaultValue(modelField);
+            }
+        }
         if (value == null) {
             value = "";
         }
@@ -719,15 +748,12 @@ public class FormeeTags extends FastTags {
             case RESET:
                 // Just input type & class
                 return String.format(htmlElement, _inputType, _class, serialize(args));
+            case TIMESTAMP:
+                _inputType = InputType.TEXT.toString().toLowerCase();
             default:
                 return String.format(htmlElement, _inputType, dataValidation, _class, id, name, value, serialize(args, unless));    // except unless
         }
     }
-
-//    static String formatHtmlElementAttributes(Map<?, ?> args, InputType inputType, String htmlElement, Map.Entry<String, String> modelField) throws Exception {
-//        String dataValidation = null;
-//        return formatHtmlElementAttributes(args, inputType, htmlElement, modelField, dataValidation);
-//    }
 
     /**
      * Gets the model name & the field name from a map of arguments by the key
@@ -736,7 +762,7 @@ public class FormeeTags extends FastTags {
      * @return Map.Entry representing the Model as key and the Field as value
      * @throws IllegalArgumentException if the field argument doesn't contain the model name or the field name
      */
-    static Map.Entry<String, String> getModelField(Map<?,?> args) {
+    private static Map.Entry<String, String> getModelField(Map<?,?> args) {
         String _for = args.get("for") != null ? args.get("for").toString() : null;
         if (_for == null) {
             throw new IllegalArgumentException("There's no 'for' argument");
@@ -768,7 +794,7 @@ public class FormeeTags extends FastTags {
      *         properties in the current template under the key "_editObject_"
      * @throws Exception - see method {@link #getFieldValue(Object, String)}
      */
-    static Object getDefaultValue(Map.Entry<String, String> modelField) throws Exception {
+    private static Object getDefaultValue(Map.Entry<String, String> modelField) throws Exception {
         if (modelField != null && BaseTemplate.layoutData.get().containsKey("_editObject_")) {
             Object obj = BaseTemplate.layoutData.get().get("_editObject_");
             return getFieldValue(obj, modelField.getValue());
@@ -785,12 +811,50 @@ public class FormeeTags extends FastTags {
      * @return the value of the field from the object
      * @throws Exception specified by these methods {@link Class#getField(String)} & {@link Field#get(Object)}
      */
-    static Object getFieldValue(Object obj, String fieldName) throws Exception {
+    private static Object getFieldValue(Object obj, String fieldName) throws Exception {
         try {
-            return obj.getClass().getField(fieldName).get(obj);
+            Class fieldType = obj.getClass().getField(fieldName).getType();
+            if (fieldType.equals(java.util.Date.class)) { // Is of type Date?
+                Field f = obj.getClass().getField(fieldName);
+                String pattern = getDatePattern(f);
+                java.util.Date date = (java.util.Date) obj.getClass().getField(fieldName).get(obj);
+                return JavaExtensions.format(date, pattern);
+            } else {
+                return obj.getClass().getField(fieldName).get(obj);
+                //return PropertyUtils.getProperty(obj, fieldName)).getTime(); <--- (BeanUtils) this statement doesn't get the value
+            }
         } catch (Exception e) {
             return "";
         }
+    }
+    
+    private static String getDatePattern(Field f) {
+        String pattern = Play.configuration.getProperty("date.format", "yyyy-MM-dd");   // Default until declared otherwise
+        String lang = Lang.get();    // get the current language for the user
+//        play.Logger.debug("CURRENT LANG: %s", lang);
+
+        As as = f.getAnnotation(As.class);
+        if (as != null) {   // Field is annotated with @As
+            if (!lang.isEmpty()) {    // There's a current lang configured
+                if (as.lang().length == 1 && as.lang()[0].equals("*") && as.value().length == 1) {  // No lang specified, but value did
+                    pattern = as.value()[0];
+                } else {
+                    // try to find the current lang from the array
+                    if (ArrayUtils.contains(as.lang(), lang)) {
+                        int idx = ArrayUtils.indexOf(as.lang(), lang);
+                        pattern = as.value()[idx];
+                    }
+                }
+            } else if (as.value().length > 0) {    // There's NO current lang configured
+                pattern = as.value()[0];    // get the very first one
+            }
+        } else {     // Field is NOT annotated with @As
+            if (!lang.isEmpty() && Play.langs.contains(lang)) {
+                pattern = Play.configuration.getProperty("date.format." + lang, "yyyy-MM-dd");
+            }
+        }
+
+        return pattern;
     }
 
     private static Object checkForConfirmElement(Closure body, String html) {
@@ -847,80 +911,80 @@ public class FormeeTags extends FastTags {
         }
     }
 
-    public static void printTheList(List<?> items, Class<?> objClass, String titleField, String valueField, String htmlElement, PrintWriter out, Map<?, ?> args, Object validation) throws Exception {
-        String label = "<label class='sLbl' for='%s'>%s</label>";
-        Object id = args.remove("id");
-        Object _class = args.remove("class");
-        Object name = args.remove("name");
-        boolean horizontal = args.remove("horizontal") != null;
-        String separator = "";
-        if (horizontal) {
-            separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
-        } else {
-            separator = "<br/>";
-        }
-        if (id == null) {
-            id = titleField;
-        }
-        if (name == null) {
-            name = objClass.getSimpleName();
-        }
-        if (_class == null) {
-            _class = objClass.getSimpleName();
-        }
+//    public static void printTheList(List<?> items, Class<?> objClass, String titleField, String valueField, String htmlElement, PrintWriter out, Map<?, ?> args, Object validation) throws Exception {
+//        String label = "<label class='sLbl' for='%s'>%s</label>";
+//        Object id = args.remove("id");
+//        Object _class = args.remove("class");
+//        Object name = args.remove("name");
+//        boolean horizontal = args.remove("horizontal") != null;
+//        String separator = "";
+//        if (horizontal) {
+//            separator = "&nbsp;&nbsp;&nbsp;&nbsp;";
+//        } else {
+//            separator = "<br/>";
+//        }
+//        if (id == null) {
+//            id = titleField;
+//        }
+//        if (name == null) {
+//            name = objClass.getSimpleName();
+//        }
+//        if (_class == null) {
+//            _class = objClass.getSimpleName();
+//        }
+//
+//        int i = 1;
+//        for (Object obj : items) {
+//            String[] titleValue = new String[2];
+//            titleValue[0] = getFieldValue(obj, titleField).toString();
+//            titleValue[1] = getFieldValue(obj, valueField).toString();
+//            // class id title
+//            out.print(String.format(label, _class, id.toString() + i, titleValue[0]) + "&nbsp;");
+//
+//            if (!validation.toString().isEmpty()) {
+//                validation = "validate[" + validation + "]";
+//            }
+//            // valid class id name title value
+//            out.println(String.format(htmlElement, validation, _class, id.toString() + i, name, titleValue[0], titleValue[1]));
+//            out.println(separator);
+//            i++;
+//        }
+//    }
 
-        int i = 1;
-        for (Object obj : items) {
-            String[] titleValue = new String[2];
-            titleValue[0] = getFieldValue(obj, titleField).toString();
-            titleValue[1] = getFieldValue(obj, valueField).toString();
-            // class id title
-            out.print(String.format(label, _class, id.toString() + i, titleValue[0]) + "&nbsp;");
-
-            if (!validation.toString().isEmpty()) {
-                validation = "validate[" + validation + "]";
-            }
-            // valid class id name title value
-            out.println(String.format(htmlElement, validation, _class, id.toString() + i, name, titleValue[0], titleValue[1]));
-            out.println(separator);
-            i++;
-        }
-    }
-
-    /**
-     * Extracts validation info from the tag attributes {@code arg} that are
-     * valid for inputs of type check box.
-     *
-     * @param args tag attributes
-     * @param isSingle to check if the validation for single checkbox or for a group of checkboxes.
-     * @return String representing the validation extracted.
-     */
-    private static String getCheckBoxValidation(Map<?, ?> args, boolean isSingle) {
-        Object minCheckbox = args.remove("min");
-        Object maxCheckbox = args.remove("max");
-        if (minCheckbox == null) {
-            minCheckbox = "";
-        } else {
-            minCheckbox = "minCheckbox[" + minCheckbox + "]";
-        }
-
-        if (maxCheckbox == null) {
-            maxCheckbox = "";
-        } else {
-            maxCheckbox = ",maxCheckbox[" + maxCheckbox + "]";
-        }
-        if (isSingle) {
-            boolean isRequired = args.remove("required") != null;
-            Object group = args.remove(",group");
-            if (group == null) {
-                group = "";
-            } else {
-                group = "groupRequired[" + group + "]";
-            }
-            minCheckbox = minCheckbox.toString() + group + (isRequired ? "required" : "");
-        }
-        return minCheckbox + maxCheckbox.toString();
-    }
+//    /**
+//     * Extracts validation info from the tag attributes {@code arg} that are
+//     * valid for inputs of type check box.
+//     *
+//     * @param args tag attributes
+//     * @param isSingle to check if the validation for single checkbox or for a group of checkboxes.
+//     * @return String representing the validation extracted.
+//     */
+//    private static String getCheckBoxValidation(Map<?, ?> args, boolean isSingle) {
+//        Object minCheckbox = args.remove("min");
+//        Object maxCheckbox = args.remove("max");
+//        if (minCheckbox == null) {
+//            minCheckbox = "";
+//        } else {
+//            minCheckbox = "minCheckbox[" + minCheckbox + "]";
+//        }
+//
+//        if (maxCheckbox == null) {
+//            maxCheckbox = "";
+//        } else {
+//            maxCheckbox = ",maxCheckbox[" + maxCheckbox + "]";
+//        }
+//        if (isSingle) {
+//            boolean isRequired = args.remove("required") != null;
+//            Object group = args.remove(",group");
+//            if (group == null) {
+//                group = "";
+//            } else {
+//                group = "groupRequired[" + group + "]";
+//            }
+//            minCheckbox = minCheckbox.toString() + group + (isRequired ? "required" : "");
+//        }
+//        return minCheckbox + maxCheckbox.toString();
+//    }
 
     private static String to_underscore_case(String name) {
         String[] tokens = StringUtils.splitByCharacterTypeCamelCase(name);
